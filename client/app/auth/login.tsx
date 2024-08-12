@@ -122,6 +122,7 @@ export default function Login() {
           <Text style={{fontFamily: "medium"}}>You don't have an account? </Text>
         <Text style={{fontFamily: "bold"}}>Sign up!</Text>
       </Link>
+      <Link href="../tabs">Tabs</Link>
     </SafeAreaView>
   );
 }
