@@ -3,13 +3,14 @@ package com.radekgrzywacz.coffeediaryapi.service;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.annotation.PostConstruct;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.function.Function;
@@ -18,10 +19,18 @@ import java.util.function.Function;
 public class JWTUtils {
 
     private SecretKey key;
-    private static final long EXPIRATION_TIME = 86400000;
 
-    public JWTUtils() {
-        String secretString = "90123ohi2dhiisadhsoadh901239h90da0as9h[da99d9[0ashd90h1h2lhabsdyva6f1236fdsuah89ysd9a1972g3";
+    @Value("${application.security.jwt.secret-key}")
+    private String secretString;
+
+    @Value("${application.security.jwt.access-token-expiration}")
+    private long accessTokenExpiration;
+
+    @Value("${application.security.jwt.refresh-token-expiration}")
+    private long refreshTokenExpiration;
+
+    @PostConstruct
+    private void init() {
         byte[] keyBytes = secretString.getBytes(StandardCharsets.UTF_8);
         this.key = new SecretKeySpec(keyBytes, SignatureAlgorithm.HS256.getJcaName());
     }
@@ -30,7 +39,7 @@ public class JWTUtils {
         return Jwts.builder()
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .expiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
                 .signWith(key)
                 .compact();
     }
@@ -40,7 +49,7 @@ public class JWTUtils {
                 .claims(claims)
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .expiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
                 .signWith(key)
                 .compact();
     }
@@ -61,7 +70,4 @@ public class JWTUtils {
     public boolean isTokenExpired(String token) {
         return extractClaims(token, Claims::getExpiration).before(new Date());
     }
-
-
-
 }

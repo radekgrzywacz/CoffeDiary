@@ -3,10 +3,7 @@ package com.radekgrzywacz.coffeediaryapi.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.radekgrzywacz.coffeediaryapi.entity.AppUser;
-import com.radekgrzywacz.coffeediaryapi.entity.Product;
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -19,11 +16,9 @@ public class RequestResponse {
     private String token;
     private String refreshToken;
     private String expirationTime;
-    private String name;
     private String username;
     private String role;
     private String password;
     private String email;
-    private List<Product> products;
     private AppUser appUser;
 }

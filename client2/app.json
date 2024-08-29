@@ -2,6 +2,7 @@
   "expo": {
     "name": "client",
     "slug": "client",
+    "scheme": "client",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -24,8 +25,14 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-font",
-      "expo-secure-store"
-    ]
+      "expo-router",
+      "expo-font"
+    ],
+    "splash": {
+      "image": "./assets/Dripper-Outline.png",
+      "backgroundColor": "#E5E0D8",
+      "resizeMode": "contain"
+    },
+    "icon": "./assets/Dripper-Outline.png"
   }
 }

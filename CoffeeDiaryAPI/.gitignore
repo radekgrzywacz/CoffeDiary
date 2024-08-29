@@ -33,5 +33,5 @@ build/
 .vscode/
 
 ### Ignore the application.properties file specifically
-**/resources/application.properties
+**/resources/application.yml
 

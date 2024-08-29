@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   Button,
 } from "react-native";
-import { COLORS } from "../../constants/colors";
+import { COLORS } from "../constants/colors";
 import { Link } from "expo-router";
 import React, { useState } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";

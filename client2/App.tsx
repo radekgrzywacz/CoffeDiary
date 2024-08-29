@@ -1,7 +1,5 @@
 import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
 import { useFonts } from "expo-font";
-import MainNavigator from "./navigation/MainNavigator";
-import { AuthProvider } from "./context/AuthContext";
 
 
 export default function App() {
@@ -24,9 +22,7 @@ export default function App() {
   }
 
   return (
-    <AuthProvider>
-      <MainNavigator />
-    </AuthProvider>
+          <AppNav />
   );
 }
 
