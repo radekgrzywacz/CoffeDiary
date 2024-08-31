@@ -23,8 +23,8 @@ const screen = Dimensions.get("screen");
 export default function Register({ navigation }: RegisterProps) {
   const [username, setUsername] = useState("test");
   const [email, setEmail] = useState("test@mail.com");
-  const [password, setPassword] = useState("password");
-  const [confirmPassword, setConfirmPassword] = useState("password");
+  const [password, setPassword] = useState("Pa$$w0rd");
+  const [confirmPassword, setConfirmPassword] = useState("Pa$$w0rd");
   const {onRegister, onLogin} = useAuth();
 
   const login = async () => {
@@ -37,7 +37,9 @@ export default function Register({ navigation }: RegisterProps) {
   const register = async () => {
     const result = await onRegister!(username, email, password, "USER");
     if(result && result.error) {
-      alert(result.msg);
+      let message = result.msg;
+      alert(message.trim());
+      console.log(message.trim())
     } else {
       login()
     }

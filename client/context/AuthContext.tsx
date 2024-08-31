@@ -79,8 +79,10 @@ export const AuthProvider = ({ children }: any) => {
         password,
         role
       });
-    } catch (e) {
-      return { error: true, msg: (e as any).response.data.msg };
+
+    } catch (e: any) {
+      const errorMessage = e.response.data.message || "An error occurred";
+        return { error: true, msg: errorMessage };
     }
   };
 
@@ -91,11 +93,11 @@ export const AuthProvider = ({ children }: any) => {
         password,
       });
 
-      console.log("AuthContext.tsx:41 ~ login ~ result:", result.data);
+      console.log("AuthContext.tsx:95 ~ login ~ result:", result.data);
 
       // Check if the response has an error
       if (result.data.statusCode !== 200) {
-        return { error: true, msg: result.data.message || "Login failed" };
+        return { error: true, msg: result || "Login failed" };
       }
 
       setAuthState({
@@ -115,8 +117,9 @@ export const AuthProvider = ({ children }: any) => {
       );
 
       return result;
-    } catch (e) {
-      return { error: true, msg: (e as any).response.data.msg };
+    } catch (e: any) {
+      const errorMessage = e.response.data.message || "An error occurred";
+        return { error: true, msg: errorMessage };
     }
   };
 
