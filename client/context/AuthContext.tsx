@@ -37,7 +37,6 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }: any) => {
-  let api = useAxios();
   
   const [authState, setAuthState] = useState<{
     accessToken: string | null;
@@ -53,7 +52,7 @@ export const AuthProvider = ({ children }: any) => {
     const loadToken = async () => {
       const token = await SecureStore.getItemAsync(TOKEN_KEY);
       const refreshToken = await SecureStore.getItemAsync(REFRESH_TOKEN_KEY);
-      console.log("AuthContext.tsx: 42 ~ loadToken ~ stored token: ", token);
+      console.log("AuthContext.tsx: 55 ~ loadToken ~ stored token: ", token);
 
       if (token) {
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
@@ -123,9 +122,8 @@ export const AuthProvider = ({ children }: any) => {
   };
 
   const logout = async () => {
+    console.log("In logout in authContext")
     await SecureStore.deleteItemAsync(TOKEN_KEY);
-
-    await api.post(`${API_URL}/logout`);
 
     axios.defaults.headers.common["Authorization"] = "";
 
