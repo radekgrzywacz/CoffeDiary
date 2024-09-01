@@ -8,10 +8,11 @@ import React, {
   useState,
 } from "react";
 import * as SecureStore from "expo-secure-store";
+import useAxios from "../utils/useAxios";
 
 interface AuthProps {
   authState?: {
-    token: string | null;
+    accessToken: string | null;
     refreshToken: string | null;
     authenticated: boolean | null;
   };
@@ -25,8 +26,8 @@ interface AuthProps {
   onLogout?: () => Promise<any>;
 }
 
-const TOKEN_KEY = "coffee_diary-JWT-access";
-const REFRESH_TOKEN_KEY = "coffee_diary-JWT-refresh";
+export const TOKEN_KEY = "coffee_diary-JWT-access";
+export const REFRESH_TOKEN_KEY = "coffee_diary-JWT-refresh";
 export const API_URL = "http://localhost:6060";
 
 const AuthContext = createContext<AuthProps>({});
@@ -36,12 +37,14 @@ export const useAuth = () => {
 };
 
 export const AuthProvider = ({ children }: any) => {
+  let api = useAxios();
+  
   const [authState, setAuthState] = useState<{
-    token: string | null;
+    accessToken: string | null;
     refreshToken: string | null;
     authenticated: boolean | null;
   }>({
-    token: null,
+    accessToken: null,
     refreshToken: null,
     authenticated: null,
   });
@@ -56,7 +59,7 @@ export const AuthProvider = ({ children }: any) => {
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
         setAuthState({
-          token: token,
+          accessToken: token,
           refreshToken: refreshToken,
           authenticated: true,
         });
@@ -81,7 +84,7 @@ export const AuthProvider = ({ children }: any) => {
       });
 
     } catch (e: any) {
-      const errorMessage = e.response.data.message || "An error occurred";
+      const errorMessage = e.response.data.error || "An error occurred";
         return { error: true, msg: errorMessage };
     }
   };
@@ -95,22 +98,18 @@ export const AuthProvider = ({ children }: any) => {
 
       console.log("AuthContext.tsx:95 ~ login ~ result:", result.data);
 
-      // Check if the response has an error
-      if (result.data.statusCode !== 200) {
-        return { error: true, msg: result || "Login failed" };
-      }
-
       setAuthState({
-        token: result.data.token,
+        accessToken: result.data.accessToken,
         refreshToken: result.data.refreshToken,
         authenticated: true,
       });
+      console.log()
 
       axios.defaults.headers.common[
         "Authorization"
-      ] = `Bearer ${result.data.token}`;
+      ] = `Bearer ${result.data.accessToken}`;
 
-      await SecureStore.setItemAsync(TOKEN_KEY, result.data.token);
+      await SecureStore.setItemAsync(TOKEN_KEY, result.data.accessToken);
       await SecureStore.setItemAsync(
         REFRESH_TOKEN_KEY,
         result.data.refreshToken
@@ -126,10 +125,12 @@ export const AuthProvider = ({ children }: any) => {
   const logout = async () => {
     await SecureStore.deleteItemAsync(TOKEN_KEY);
 
+    await api.post(`${API_URL}/logout`);
+
     axios.defaults.headers.common["Authorization"] = "";
 
     setAuthState({
-      token: null,
+      accessToken: null,
       refreshToken: null,
       authenticated: false,
     });

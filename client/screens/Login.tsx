@@ -30,7 +30,8 @@ export default function Login({ navigation }: LoginProps) {
     const result = await onLogin!(username, password);
     if (result && result.error) {
       alert(result.msg);
-      console.log(result.data.message)
+      console.log(result.error)
+      console.log(result)
     }
   };
 

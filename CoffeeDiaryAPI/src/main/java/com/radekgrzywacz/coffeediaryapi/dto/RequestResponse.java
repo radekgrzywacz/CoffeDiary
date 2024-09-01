@@ -25,7 +25,6 @@ public class RequestResponse {
     @Size(min = 3, message = "Please, provide valid password")
     private String password;
     @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$", message = "Please, provide valid email format")
-    @Size(min = 3, message = "Please, provide valid email address")
     private String email;
     private AppUser appUser;
 }
