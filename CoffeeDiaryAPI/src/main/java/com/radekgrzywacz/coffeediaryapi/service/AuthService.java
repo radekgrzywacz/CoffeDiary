@@ -81,16 +81,19 @@ public class AuthService {
     }
 
 
-    public AuthenticationResponse login(AppUser request) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-
+    public ResponseEntity<AuthenticationResponse> login(AppUser request) {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        } catch(Exception ex) {
+            return ResponseEntity.badRequest().body(new AuthenticationResponse("Login or password incorrect!"));
+        }
         AppUser user = appUserRepo.findByUsername(request.getUsername()).orElseThrow();
         String accessToken = jwtUtils.generateAccessToken(user);
         String refreshToken = jwtUtils.generateRefreshToken(user);
         deleteUserToken(user);
         saveUserToken(refreshToken, user);
 
-        return new AuthenticationResponse(accessToken, refreshToken);
+        return ResponseEntity.ok().body(new AuthenticationResponse(accessToken, refreshToken));
     }
 
     private void saveUserToken(String jwt, AppUser user) {

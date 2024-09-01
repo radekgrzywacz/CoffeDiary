@@ -116,13 +116,12 @@ export const AuthProvider = ({ children }: any) => {
 
       return result;
     } catch (e: any) {
-      const errorMessage = e.response.data.message || "An error occurred";
+      const errorMessage = e.response.data.error || "An error occurred";
         return { error: true, msg: errorMessage };
     }
   };
 
   const logout = async () => {
-    console.log("In logout in authContext")
     await SecureStore.deleteItemAsync(TOKEN_KEY);
 
     axios.defaults.headers.common["Authorization"] = "";

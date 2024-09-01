@@ -4,7 +4,7 @@ export const COLORS = {
     matcha: "#809671",
     almond: "#E5E0D8",
     pistache: "#B3B792",
-    chai: "#D2AB80",
+    chai: "#a26957",
     carob: "#725C3A",
     vanilla: "#E5D2B8",
     caramel: "#895D2B",

@@ -31,7 +31,7 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody AppUser request) {
-        return ResponseEntity.ok(authService.login(request));
+        return authService.login(request);
     }
 
     @PostMapping("/refresh_token")

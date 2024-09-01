@@ -8,9 +8,11 @@ export type RootStackParamList = {
 };
 
 export type RootTabParamList = {
+  Test: undefined;
   Home: undefined;
 }
 
 export type LoginScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
 export type RegisterScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Register'>;
+export type TestScreenNavigationProp = BottomTabNavigationProp<RootTabParamList, 'Test'>;
 export type HomeScreenNavigationProp = BottomTabNavigationProp<RootTabParamList, 'Home'>;
