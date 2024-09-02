@@ -8,7 +8,7 @@ import React, {
   useState,
 } from "react";
 import * as SecureStore from "expo-secure-store";
-import useAxios from "../utils/useAxios";
+import * as Device from 'expo-device';
 
 interface AuthProps {
   authState?: {
@@ -28,7 +28,7 @@ interface AuthProps {
 
 export const TOKEN_KEY = "coffee_diary-JWT-access";
 export const REFRESH_TOKEN_KEY = "coffee_diary-JWT-refresh";
-export const API_URL = "http://localhost:6060";
+export const API_URL = Device.isDevice ? "http://192.168.68.105:6060" : "http://localhost:6060";
 
 const AuthContext = createContext<AuthProps>({});
 
