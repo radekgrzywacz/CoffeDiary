@@ -8,12 +8,14 @@ import {
     TextInput,
     Dimensions,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { COLORS } from "../constants/colors";
 import { SelectList } from "react-native-dropdown-select-list";
 import { Feather } from "@expo/vector-icons";
 import SmallInputContainer from "../constants/smallInputContainer";
 import SelectListCustom from "../constants/SelectList";
+import AddStepBottomSheet from "../constants/AddStepBottomSheet";
+import BottomSheet, { BottomSheetModal } from "@gorhom/bottom-sheet";
 const width = Dimensions.get("screen").width;
 const height = Dimensions.get("screen").height;
 
@@ -46,6 +48,12 @@ const AddRecipe = () => {
         { key: "3", value: "Commandante" },
         { key: "4", value: "Zpresso", disabled: false },
     ];
+
+    const bottomSheetRef = useRef<BottomSheetModal>(null);
+    const handlePresentModalPress = () => {
+        console.log("bottom shit")
+        bottomSheetRef.current?.present();
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -142,7 +150,7 @@ const AddRecipe = () => {
                         }}
                     >
                         <Text style={styles.mediumText}>Steps: </Text>
-                        <TouchableOpacity onPress={() => console.log("Adding step..")}>
+                        <TouchableOpacity onPress={handlePresentModalPress}>
                             <Feather
                                 name="plus-circle"
                                 size={24}
@@ -151,6 +159,7 @@ const AddRecipe = () => {
                             />
                         </TouchableOpacity>
                     </View>
+                    <AddStepBottomSheet ref={bottomSheetRef} title={"Title"} />
                 </View>
             </ScrollView>
         </SafeAreaView>
