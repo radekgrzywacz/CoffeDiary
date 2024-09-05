@@ -2,17 +2,14 @@ import { View, Text, StyleSheet, Dimensions, Image } from "react-native";
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { RootTabParamList } from "../types/navigationTypes";
-import Test from "../screens/Test";
+import Profile from "../screens/Profile";
 import Home from "../screens/Home";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { COLORS } from "../constants/colors";
 import Diary from "../screens/Diary";
-
-// Preload both images
-const bookIcon = require("../assets/book.png");
-const bookOutlineIcon = require("../assets/book-outline.png");
-const homeIcon = require("../assets/home.png")
-const homeOutlineIcon = require("../assets/home-outline.png")
+import { TabBar } from "../components/TabBar";
+import Recipes from "../screens/Recipes";
+import New from "../screens/New";
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
@@ -22,59 +19,21 @@ const height = Dimensions.get("screen").height;
 const AppNavigator = () => {
   return (
     <Tab.Navigator
+      tabBar={(props) => <TabBar {...props} />}
       initialRouteName="Home"
       screenOptions={{
-        tabBarShowLabel: false,
+        //tabBarShowLabel: false,
         headerShown: false,
-        tabBarStyle: styles.tabBar,
-        tabBarActiveTintColor: COLORS.espresso,
-        tabBarInactiveTintColor: COLORS.espresso,
+        //   tabBarStyle: styles.tabBar,
+        //   tabBarActiveTintColor: COLORS.espresso,
+        //   tabBarInactiveTintColor: COLORS.espresso,
       }}
     >
-      <Tab.Screen
-        name="Test"
-        component={Test}
-        options={{
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? "build" : "build-outline"}
-              size={30}
-              color={color}
-              style={styles.tabBarIcon}
-            />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Home"
-        component={Home}
-        options={{
-          tabBarIcon: ({ color, focused }) => (
-            <View style={styles.iconContainer}>
-              <Image
-                source={focused ? homeIcon : homeOutlineIcon}
-                resizeMode="contain"
-                style={[styles.iconImage, { tintColor: color }]}
-              />
-            </View>
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Diary"
-        component={Diary}
-        options={{
-          tabBarIcon: ({ color, focused }) => (
-            <View style={styles.iconContainer}>
-              <Image
-                source={focused ? bookIcon : bookOutlineIcon}
-                resizeMode="contain"
-                style={[styles.iconImage, { tintColor: color }]}
-              />
-            </View>
-          ),
-        }}
-      />
+      <Tab.Screen name="Diary" component={Diary} />
+      <Tab.Screen name="Recipes" component={Recipes} />
+      <Tab.Screen name="New" component={New} />
+      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );
 };
@@ -107,7 +66,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     top: 10,
-    
   },
   iconImage: {
     width: 30,

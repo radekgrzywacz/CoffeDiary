@@ -5,7 +5,7 @@ import axios from "axios";
 import useAxios from "../utils/useAxios";
 import { COLORS } from "../constants/colors";
 
-const Test = () => {
+const Profile = () => {
   let api = useAxios();
   const { onLogout } = useAuth();
   const [test, setTest] = useState("");
@@ -31,7 +31,7 @@ const Test = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text>home</Text>
+      <Text>Profile</Text>
       <Button onPress={testReq} title="test" />
       <Button onPress={logout} title="logout" />
       <Button onPress={onLogout} title="safe logout" />
@@ -39,7 +39,7 @@ const Test = () => {
   );
 };
 
-export default Test;
+export default Profile;
 
 const styles = StyleSheet.create({
   container: {

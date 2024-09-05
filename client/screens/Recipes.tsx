@@ -2,22 +2,21 @@ import { View, Text, StyleSheet, SafeAreaView } from 'react-native'
 import React from 'react'
 import { COLORS } from '../constants/colors'
 
-const Diary = () => {
+const Recipes = () => {
   return (
     <SafeAreaView style={styles.container}>
-      <Text>Diary</Text>
+      <Text>Recipes</Text>
     </SafeAreaView>
   )
 }
 
-export default Diary
+export default Recipes
 
 
 const styles = StyleSheet.create({
   container: {
       flex: 1,
       alignItems: "center",
-      padding: 24,
       backgroundColor: COLORS.almond,
     },
 })

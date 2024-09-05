@@ -40,28 +40,27 @@ public class AuthService {
 
     public ResponseEntity<AuthenticationResponse> register(AppUser request, BindingResult bindingResult) {
         StringBuilder errors = new StringBuilder();
-        if(bindingResult.hasErrors()) {
-           for(FieldError error : bindingResult.getFieldErrors()) {
-               errors.append(error.getDefaultMessage() + "\n");
-           }
+        if (bindingResult.hasErrors()) {
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                errors.append(error.getDefaultMessage() + "\n");
+            }
         }
 
         AppUser userExistanceCheck = appUserRepo.findByUsername(request.getUsername()).orElse(null);
-        if(userExistanceCheck != null) {
+        if (userExistanceCheck != null) {
             errors.append("Username already exists!\n");
         }
 
         userExistanceCheck = null;
 
         userExistanceCheck = appUserRepo.findByEmail(request.getEmail()).orElse(null);
-        if(userExistanceCheck != null) {
+        if (userExistanceCheck != null) {
             errors.append("Email already exists!\n");
         }
 
-        if(errors.length() > 0) {
+        if (errors.length() > 0) {
             return ResponseEntity.badRequest().body(new AuthenticationResponse(errors.toString()));
         }
-
 
 
         AppUser user = new AppUser();
@@ -84,7 +83,7 @@ public class AuthService {
     public ResponseEntity<AuthenticationResponse> login(AppUser request) {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             return ResponseEntity.badRequest().body(new AuthenticationResponse("Login or password incorrect!"));
         }
         AppUser user = appUserRepo.findByUsername(request.getUsername()).orElseThrow();
@@ -112,7 +111,7 @@ public class AuthService {
     public ResponseEntity refreshToken(HttpServletRequest request, HttpServletResponse response) {
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if(authHeader != null && !authHeader.startsWith("Bearer ")) {
+        if (authHeader != null && !authHeader.startsWith("Bearer ")) {
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
 
@@ -122,7 +121,7 @@ public class AuthService {
 
         AppUser user = appUserRepo.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("No user found"));
 
-        if(jwtUtils.isValidRefreshToken(token, user)){
+        if (jwtUtils.isValidRefreshToken(token, user)) {
             String accessToken = jwtUtils.generateAccessToken(user);
             String refreshToken = jwtUtils.generateRefreshToken(user);
             deleteUserToken(user);
