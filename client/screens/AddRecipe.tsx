@@ -12,10 +12,12 @@ import React, { useRef, useState } from "react";
 import { COLORS } from "../constants/colors";
 import { SelectList } from "react-native-dropdown-select-list";
 import { Feather } from "@expo/vector-icons";
-import SmallInputContainer from "../constants/smallInputContainer";
-import SelectListCustom from "../constants/SelectList";
-import AddStepBottomSheet from "../constants/AddStepBottomSheet";
+import SmallInputContainer from "../components/smallInputContainer";
+import SelectListCustom from "../components/SelectList";
+import AddStepBottomSheet from "../components/AddStepBottomSheet";
 import BottomSheet, { BottomSheetModal } from "@gorhom/bottom-sheet";
+
+
 const width = Dimensions.get("screen").width;
 const height = Dimensions.get("screen").height;
 
