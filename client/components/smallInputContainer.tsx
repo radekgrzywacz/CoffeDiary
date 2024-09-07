@@ -37,7 +37,6 @@ const styles = StyleSheet.create({
     },
     smallTextInputFrame: {
         borderWidth: 2,
-        flex: 1,
         padding: 3,
         borderRadius: 10,
         borderColor: COLORS.espresso,

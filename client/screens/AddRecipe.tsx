@@ -4,32 +4,123 @@ import {
     SafeAreaView,
     StyleSheet,
     TouchableOpacity,
-    ScrollView,
-    TextInput,
     Dimensions,
+    TextInput,
+    Button,
 } from "react-native";
 import React, { useRef, useState } from "react";
 import { COLORS } from "../constants/colors";
-import { SelectList } from "react-native-dropdown-select-list";
-import { Feather } from "@expo/vector-icons";
 import SmallInputContainer from "../components/smallInputContainer";
 import SelectListCustom from "../components/SelectList";
 import AddStepBottomSheet from "../components/AddStepBottomSheet";
-import BottomSheet, { BottomSheetModal } from "@gorhom/bottom-sheet";
-
+import { Feather } from "@expo/vector-icons";
+import Timeline from "react-native-timeline-flatlist";
 
 const width = Dimensions.get("screen").width;
 const height = Dimensions.get("screen").height;
+
+export interface Step {
+    time: number;
+    title: string;
+    description: string;
+}
 
 const AddRecipe = () => {
     const [name, setName] = useState("");
     const [brewer, setBrewer] = useState("");
     const [grinder, setGrinder] = useState("");
-    const [grinderSetrings, setGrinderSettings] = useState(0);
+    const [grinderSettings, setGrinderSettings] = useState(0);
     const [temperature, setTemperature] = useState(0);
     const [waterAmount, setWaterAmount] = useState(0);
     const [coffeeAmount, setCoffeeAmount] = useState(0);
     const coffeeRatio = ~~(waterAmount / coffeeAmount);
+    const [steps, setSteps] = useState<Step[]>([
+        {
+            description: "Grind 20g of coffee",
+            time: 123,
+            title: "Grind coffee",
+        },
+        {
+            description: "Heat 300ml of water to 90°C",
+            time: 30,
+            title: "Heat water",
+        },
+        {
+            description: "Grind 20g of coffee",
+            time: 123,
+            title: "Grind coffee",
+        },
+        {
+            description: "Heat 300ml of water to 90°C",
+            time: 30,
+            title: "Heat water",
+        },
+        {
+            description: "Grind 20g of coffee",
+            time: 123,
+            title: "Grind coffee",
+        },
+        {
+            description: "Heat 300ml of water to 90°C",
+            time: 30,
+            title: "Heat water",
+        },
+        {
+            description: "Grind 20g of coffee",
+            time: 123,
+            title: "Grind coffee",
+        },
+        {
+            description: "Heat 300ml of water to 90°C",
+            time: 30,
+            title: "Heat water",
+        },
+    ]);
+
+    const deleteStep = (stepToDelete: Step) => {
+        setSteps((prevSteps) =>
+            prevSteps.filter((step) => step !== stepToDelete)
+        );
+    };
+
+    const handleAddStep = (newStep: Step) => {
+        setSteps((prevSteps) => [...prevSteps, newStep]);
+    };
+
+    const renderDetail = (step: Step) => {
+        return (
+            <View style={styles.detailContainer}>
+                <View style={{ marginTop: -6 }}>
+                    <Text style={styles.detailText}>{step.description}</Text>
+                </View>
+                <TouchableOpacity onPress={() => deleteStep(step)}>
+                    <Feather
+                        name="trash"
+                        size={15}
+                        color={COLORS.espresso}
+                        style={{ marginTop: -12, alignSelf: "flex-end" }}
+                    />
+                </TouchableOpacity>
+            </View>
+        );
+    };
+
+    const renderTime = (step: Step) => {
+        const minutes = Math.floor(step.time / 60);
+        const seconds = step.time % 60;
+    
+        // Conditional rendering based on minutes and seconds
+        return (
+            <View style={{minWidth: 65}}>
+                {step.time > 0 && (
+                    <Text>
+                        {minutes > 0 ? `${minutes} min ` : ''}
+                        {seconds > 0 || minutes > 0 ? `${seconds} s` : ''}
+                    </Text>
+                )}
+            </View>
+        );
+    };
 
     const isRatioReady =
         waterAmount !== 0 && coffeeAmount !== 0 && coffeeRatio !== 0;
@@ -53,122 +144,122 @@ const AddRecipe = () => {
 
     const bottomSheetRef = useRef<BottomSheetModal>(null);
     const handlePresentModalPress = () => {
-        console.log("bottom shit")
         bottomSheetRef.current?.present();
+    };
+    const handleCloseModal = () => {
+        bottomSheetRef.current?.dismiss();
     };
 
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView bounces={true}>
-                <View style={{ paddingTop: 10, paddingHorizontal: 20 }}>
-                    <View>
-                        <Text style={styles.mediumText}>Name:</Text>
-                        <View style={styles.textInputFrame}>
-                            <TextInput
-                                style={styles.textInput}
-                                onChangeText={setName}
-                                value={name}
-                                autoCapitalize="none"
-                                autoComplete="off"
-                                autoCorrect={false}
-                                placeholder="Name"
-                            />
-                        </View>
-                    </View>
-
-                    <SelectListCustom
-                        value={brewer}
-                        onChange={setBrewer}
-                        text="Brewer"
-                        data={brewers}
+            <View style={styles.innerContainer}>
+                <Text style={styles.mediumText}>Name:</Text>
+                <View style={styles.textInputFrame}>
+                    <TextInput
+                        style={styles.textInput}
+                        onChangeText={setName}
+                        value={name}
+                        autoCapitalize="none"
+                        autoComplete="off"
+                        autoCorrect={false}
+                        placeholder="Name"
                     />
-                    <SelectListCustom
-                        value={grinder}
-                        onChange={setGrinder}
-                        text="Grinder"
-                        data={grinders}
-                    />
-                    <Text style={[styles.mediumText, { marginTop: 5 }]}>
-                        Process:{" "}
-                    </Text>
-                    <View style={{ flexDirection: "row" }}>
-                        <SmallInputContainer
-                            value={grinderSetrings}
-                            onChange={setGrinderSettings}
-                            isMargin={false}
-                            placeholder="Clicks"
-                        />
-                        <SmallInputContainer
-                            value={temperature}
-                            onChange={setTemperature}
-                            isMargin={true}
-                            placeholder="Temperature"
-                        />
-                    </View>
-                    <View style={{ flexDirection: "row", marginTop: 5 }}>
-                        <SmallInputContainer
-                            value={waterAmount}
-                            onChange={setWaterAmount}
-                            isMargin={false}
-                            placeholder="Water amount"
-                        />
-                        <SmallInputContainer
-                            value={coffeeAmount}
-                            onChange={setCoffeeAmount}
-                            isMargin={true}
-                            placeholder="Coffe amount"
-                        />
-                    </View>
-                    <View
-                        style={[styles.smallTextInputFrame, { marginTop: 10 }]}
-                    >
-                        {isRatioReady && (
-                            <Text style={{ fontFamily: "light", fontSize: 10 }}>
-                                Coffee / water ratio
-                            </Text>
-                        )}
-                        <Text
-                            style={
-                                isRatioReady
-                                    ? { fontSize: 19, color: COLORS.black }
-                                    : {
-                                          fontSize: 15,
-                                          marginTop: -3,
-                                          fontFamily: "regular",
-                                          color: "#b3afac",
-                                      }
-                            }
-                        >
-                            {isRatioReady
-                                ? `1:${coffeeRatio}`
-                                : "Coffee / Water\nratio"}
-                        </Text>
-                    </View>
-                    <View
-                        style={{
-                            marginTop: 10,
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                        }}
-                    >
-                        <Text style={styles.mediumText}>Steps: </Text>
-                        <TouchableOpacity onPress={handlePresentModalPress}>
-                            <Feather
-                                name="plus-circle"
-                                size={24}
-                                color={COLORS.espresso}
-                                style={{ marginTop: 2 }}
-                            />
-                        </TouchableOpacity>
-                    </View>
-                    <AddStepBottomSheet ref={bottomSheetRef} title={"Title"} />
                 </View>
-            </ScrollView>
+
+                <SelectListCustom
+                    value={brewer}
+                    onChange={setBrewer}
+                    text="Brewer"
+                    data={brewers}
+                />
+                <SelectListCustom
+                    value={grinder}
+                    onChange={setGrinder}
+                    text="Grinder"
+                    data={grinders}
+                />
+                <Text style={[styles.mediumText, { marginTop: 5 }]}>
+                    Process:{" "}
+                </Text>
+                <View style={styles.processContainer}>
+                    <SmallInputContainer
+                        value={grinderSettings}
+                        onChange={setGrinderSettings}
+                        isMargin={false}
+                        placeholder="Clicks"
+                    />
+                    <SmallInputContainer
+                        value={temperature}
+                        onChange={setTemperature}
+                        isMargin={true}
+                        placeholder="Temperature"
+                    />
+                </View>
+                <View style={styles.processContainer}>
+                    <SmallInputContainer
+                        value={waterAmount}
+                        onChange={setWaterAmount}
+                        isMargin={false}
+                        placeholder="Water amount"
+                    />
+                    <SmallInputContainer
+                        value={coffeeAmount}
+                        onChange={setCoffeeAmount}
+                        isMargin={true}
+                        placeholder="Coffe amount"
+                    />
+                </View>
+                <View style={styles.ratioContainer}>
+                    {isRatioReady && (
+                        <Text style={styles.ratioText}>
+                            Coffee / water ratio
+                        </Text>
+                    )}
+                    <Text
+                        style={
+                            isRatioReady
+                                ? styles.ratioValue
+                                : styles.ratioPlaceholder
+                        }
+                    >
+                        {isRatioReady
+                            ? `1:${coffeeRatio}`
+                            : "Coffee / Water\nratio"}
+                    </Text>
+                </View>
+                <View style={styles.stepsHeader}>
+                    <Text style={styles.mediumText}>Steps: </Text>
+                    <TouchableOpacity onPress={handlePresentModalPress}>
+                        <Feather
+                            name="plus-circle"
+                            size={24}
+                            color={COLORS.espresso}
+                            style={{ marginTop: 2 }}
+                        />
+                    </TouchableOpacity>
+                </View>
+                <AddStepBottomSheet
+                    ref={bottomSheetRef}
+                    onAddStep={handleAddStep}
+                    close={handleCloseModal}
+                />
+                <Button onPress={() => console.log(steps)} title="Steps" />
+
+                <Timeline
+                    data={steps}
+                    renderDetail={renderDetail}
+                    lineColor={COLORS.pistache}
+                    lineWidth={2}
+                    dotColor={COLORS.pistache}
+                    circleColor={COLORS.pistache}
+                    timeContainerStyle={{minWidth: 72}}
+                    style={{height: height * 0.2, paddingBottom: 65}}
+                    renderTime={renderTime}
+                />
+            </View>
         </SafeAreaView>
     );
 };
-
-export default AddRecipe;
 
 const styles = StyleSheet.create({
     container: {
@@ -176,13 +267,16 @@ const styles = StyleSheet.create({
         alignItems: "flex-start",
         backgroundColor: COLORS.almond,
     },
+    innerContainer: {
+        paddingTop: 10,
+        paddingHorizontal: 20,
+    },
     mediumText: {
         fontFamily: "medium",
         fontSize: 19,
     },
     textInputFrame: {
         borderWidth: 2,
-        flex: 1,
         padding: 3,
         borderRadius: 10,
         borderColor: COLORS.espresso,
@@ -194,14 +288,61 @@ const styles = StyleSheet.create({
         fontFamily: "regular",
         fontSize: 19,
     },
-    smallTextInputFrame: {
+    processContainer: {
+        flexDirection: "row",
+        marginTop: 5,
+    },
+    ratioContainer: {
         borderWidth: 2,
-        flex: 1,
         padding: 3,
         borderRadius: 10,
         borderColor: COLORS.espresso,
         width: width * 0.4,
         height: height * 0.06,
         paddingTop: 5,
+        marginTop: 10,
+    },
+    ratioText: {
+        fontFamily: "light",
+        fontSize: 10,
+    },
+    ratioValue: {
+        fontSize: 19,
+        color: COLORS.black,
+    },
+    ratioPlaceholder: {
+        fontSize: 15,
+        marginTop: -3,
+        fontFamily: "regular",
+        color: "#b3afac",
+    },
+    stepsHeader: {
+        marginTop: 10,
+        flexDirection: "row",
+        justifyContent: "space-between",
+    },
+    detailContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        flexWrap: "wrap",
+        paddingHorizontal: 5,
+        //marginTop: -15,
+    },
+    detailText: {
+        fontFamily: "regular",
+        fontSize: 15,
+        //flex: 1,
+        marginTop: -10,
+        maxWidth: width * 0.5
+    },
+    timeline: {
+       // marginTop: 10,
+      //  marginStart: -5,
+    },
+    timeContainer: {
+        minWidth: width,
     },
 });
+
+export default AddRecipe;

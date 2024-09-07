@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Dimensions, Platform } from "react-native";
+import { View, Text, StyleSheet, Dimensions } from "react-native";
 import React, {
     forwardRef,
     useCallback,
@@ -10,16 +10,18 @@ import BottomSheet, {
     BottomSheetBackdrop,
     BottomSheetFlatList,
     BottomSheetModal,
+    TouchableOpacity,
 } from "@gorhom/bottom-sheet";
 import { COLORS } from "../constants/colors";
 import { TextInput } from "react-native-gesture-handler";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Picker } from "@react-native-picker/picker";
+import TimerPicker from "./TimerPicker";
+import { Step } from "../screens/AddRecipe";
 
 interface Props {
-    value: string;
-    onChange: (text: string) => void;
-    timer: boolean;
+    onAddStep: (step: Step) => void;
+    close: () => void;
 }
 
 interface TimerValues {
@@ -32,19 +34,6 @@ type Ref = BottomSheetModal;
 const width = Dimensions.get("screen").width;
 const height = Dimensions.get("screen").height;
 
-const createArray = (length: number) => {
-    const arr = [];
-    let i = 0;
-    while (i < length) {
-        arr.push(i.toString());
-        i += 1;
-    }
-    return arr;
-};
-
-const AVAILABLE_MINUTES = createArray(10);
-const AVAILABLE_SECONDS = createArray(60);
-
 const AddStepBottomSheet = forwardRef<Ref, Props>((props, ref) => {
     const snapPoints = useMemo(() => ["25%", "45%", "75%"], []);
     const [timer, setTimer] = useState<boolean>(false);
@@ -52,6 +41,8 @@ const AddStepBottomSheet = forwardRef<Ref, Props>((props, ref) => {
         selectedMinutes: 0,
         selectedSeconds: 0,
     });
+    const [description, setDescription] = useState("");
+    const step = { time: "", title: "", description: "" };
 
     const renderBackdrop = useCallback(
         (props: any) => (
@@ -63,6 +54,32 @@ const AddStepBottomSheet = forwardRef<Ref, Props>((props, ref) => {
         ),
         []
     );
+
+    const onSubmit = () => {
+        const minutes = Number(timerValues.selectedMinutes); // Ensure numbers
+        const seconds = Number(timerValues.selectedSeconds); // Ensure numbers
+
+        // Calculate total time in seconds
+        const time = seconds + minutes * 60;
+        const newStep: Step = {
+            time: time,
+            title: "",
+            description,
+        };
+
+        if (description !== "") {
+            props.onAddStep(newStep);
+            setDescription("");
+            setTimerValues({
+                selectedMinutes: 0,
+                selectedSeconds: 0,
+            });
+            setTimer(false);
+            props.close();
+        } else {
+            alert("Please, insert data!");
+        }
+    };
 
     return (
         <BottomSheetModal
@@ -79,8 +96,8 @@ const AddStepBottomSheet = forwardRef<Ref, Props>((props, ref) => {
                 <View style={styles.textInputFrame}>
                     <TextInput
                         style={styles.textInput}
-                        onChangeText={props.onChange}
-                        value={props.value}
+                        onChangeText={setDescription}
+                        value={description}
                         autoCapitalize="none"
                         autoComplete="off"
                         autoCorrect={false}
@@ -114,50 +131,18 @@ const AddStepBottomSheet = forwardRef<Ref, Props>((props, ref) => {
                     }}
                 />
                 {timer && (
-                    <View style={styles.pickerContainer}>
-                        <Picker
-                            style={styles.picker}
-                            itemStyle={styles.pickerItem}
-                            selectedValue={timerValues.selectedSeconds}
-                            mode="dropdown"
-                            onValueChange={(seconds: number) => {
-                                setTimerValues((prevState) => ({
-                                    ...prevState,
-                                    selectedSeconds: seconds,
-                                }));
-                            }}
-                        >
-                            {AVAILABLE_SECONDS.map((value) => (
-                                <Picker.Item
-                                    key={value}
-                                    label={value}
-                                    value={parseInt(value)}
-                                />
-                            ))}
-                        </Picker>
-                        <Text style={styles.pickerLabel}>Seconds</Text>
-                        <Picker
-                            style={styles.picker}
-                            selectedValue={timerValues.selectedMinutes}
-                            itemStyle={styles.pickerItem}
-                            onValueChange={(minutes: number) => {
-                                setTimerValues((prevState) => ({
-                                    ...prevState,
-                                    selectedMinutes: minutes,
-                                }));
-                            }}
-                        >
-                            {AVAILABLE_MINUTES.map((value) => (
-                                <Picker.Item
-                                    key={value}
-                                    label={value}
-                                    value={parseInt(value)}
-                                />
-                            ))}
-                        </Picker>
-                        <Text style={styles.pickerLabel}>Minutes</Text>
-                    </View>
+                    <TimerPicker
+                        timerValues={timerValues}
+                        onChange={(newValues: TimerValues) =>
+                            setTimerValues(newValues)
+                        }
+                    />
                 )}
+                <TouchableOpacity onPress={onSubmit}>
+                    <View style={styles.submitButton}>
+                        <Text style={styles.mediumText}>Submit</Text>
+                    </View>
+                </TouchableOpacity>
             </View>
         </BottomSheetModal>
     );
@@ -188,24 +173,12 @@ const styles = StyleSheet.create({
         fontFamily: "regular",
         fontSize: 19,
     },
-    picker: {
-        height: 30, // Adjust the height to show fewer items
-        width: 90,
-    },
-    pickerItem: {
-        fontSize: 15, // Increase font size for better readability
-        height: 110, // Control the height of each item
-    },
-    pickerLabel: {
-        fontFamily: "regular",
-        fontSize: 15,
-        textAlign: "center",
-        marginTop: 45
-    },
-    pickerContainer: {
-        flexDirection: "row",
-        //alignItems: "center",
-        //justifyContent: "space-between",
-        //paddingTop: 10,
+    submitButton: {
+        alignSelf: "center",
+        borderWidth: 2,
+        padding: 10,
+        borderRadius: 10,
+        borderColor: COLORS.espresso,
+        backgroundColor: COLORS.vanilla,
     },
 });
