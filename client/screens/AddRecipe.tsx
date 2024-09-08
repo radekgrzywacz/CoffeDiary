@@ -7,6 +7,7 @@ import {
     Dimensions,
     TextInput,
     Button,
+    Platform,
 } from "react-native";
 import React, { useRef, useState } from "react";
 import { COLORS } from "../constants/colors";
@@ -15,6 +16,7 @@ import SelectListCustom from "../components/SelectList";
 import AddStepBottomSheet from "../components/AddStepBottomSheet";
 import { Feather } from "@expo/vector-icons";
 import Timeline from "react-native-timeline-flatlist";
+import { Recipe } from "../types/Recipe";
 
 const width = Dimensions.get("screen").width;
 const height = Dimensions.get("screen").height;
@@ -26,13 +28,13 @@ export interface Step {
 }
 
 const AddRecipe = () => {
-    const [name, setName] = useState("");
-    const [brewer, setBrewer] = useState("");
-    const [grinder, setGrinder] = useState("");
-    const [grinderSettings, setGrinderSettings] = useState(0);
-    const [temperature, setTemperature] = useState(0);
-    const [waterAmount, setWaterAmount] = useState(0);
-    const [coffeeAmount, setCoffeeAmount] = useState(0);
+    const [name, setName] = useState<string>("");
+    const [brewer, setBrewer] = useState<string>("");
+    const [grinder, setGrinder] = useState<string>("");
+    const [grinderSettings, setGrinderSettings] = useState<number>(0);
+    const [temperature, setTemperature] = useState<number>(0);
+    const [waterAmount, setWaterAmount] = useState<number>(0);
+    const [coffeeAmount, setCoffeeAmount] = useState<number>(0);
     const coffeeRatio = ~~(waterAmount / coffeeAmount);
     const [steps, setSteps] = useState<Step[]>([
         {
@@ -108,14 +110,14 @@ const AddRecipe = () => {
     const renderTime = (step: Step) => {
         const minutes = Math.floor(step.time / 60);
         const seconds = step.time % 60;
-    
+
         // Conditional rendering based on minutes and seconds
         return (
-            <View style={{minWidth: 65}}>
+            <View style={{ minWidth: 65 }}>
                 {step.time > 0 && (
                     <Text>
-                        {minutes > 0 ? `${minutes} min ` : ''}
-                        {seconds > 0 || minutes > 0 ? `${seconds} s` : ''}
+                        {minutes > 0 ? `${minutes} min ` : ""}
+                        {seconds > 0 || minutes > 0 ? `${seconds} s` : ""}
                     </Text>
                 )}
             </View>
@@ -150,9 +152,34 @@ const AddRecipe = () => {
         bottomSheetRef.current?.dismiss();
     };
 
+    const onSave = () => {
+        const newRecipe: Recipe = {
+            name: name,
+            brewer: brewer,
+            grinder: grinder,
+            clicks: grinderSettings,
+            temperature: temperature,
+            waterAmount: waterAmount,
+            coffeeAmount: coffeeAmount,
+            coffeeRatio: coffeeRatio,
+            steps: steps,
+        };
+
+        console.log(newRecipe);
+    };
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
+                <TouchableOpacity
+                    style={{ alignSelf: "flex-end", flexDirection: "row" }}
+                    onPress={() => onSave()}
+                >
+                    <Text style={{ fontFamily: "light", fontSize: 15, color: COLORS.espresso }}>
+                        Save{" "}
+                    </Text>
+                    <Feather name="save" size={20} color={COLORS.espresso} />
+                </TouchableOpacity>
                 <Text style={styles.mediumText}>Name:</Text>
                 <View style={styles.textInputFrame}>
                     <TextInput
@@ -178,7 +205,12 @@ const AddRecipe = () => {
                     text="Grinder"
                     data={grinders}
                 />
-                <Text style={[styles.mediumText, { marginTop: 5 }]}>
+                <Text
+                    style={[
+                        styles.mediumText,
+                        { marginTop: 5, marginBottom: -10 },
+                    ]}
+                >
                     Process:{" "}
                 </Text>
                 <View style={styles.processContainer}>
@@ -243,7 +275,7 @@ const AddRecipe = () => {
                     onAddStep={handleAddStep}
                     close={handleCloseModal}
                 />
-                <Button onPress={() => console.log(steps)} title="Steps" />
+                {/* <Button onPress={() => console.log(steps)} title="Steps" /> */}
 
                 <Timeline
                     data={steps}
@@ -252,8 +284,12 @@ const AddRecipe = () => {
                     lineWidth={2}
                     dotColor={COLORS.pistache}
                     circleColor={COLORS.pistache}
-                    timeContainerStyle={{minWidth: 72}}
-                    style={{height: height * 0.2, paddingBottom: 65}}
+                    timeContainerStyle={{ minWidth: 72 }}
+                    style={{
+                        height: height * 0.2,
+                        paddingBottom: Platform.OS === "android" ? 100 : 65,
+                        marginTop: 5,
+                    }}
                     renderTime={renderTime}
                 />
             </View>
@@ -334,11 +370,11 @@ const styles = StyleSheet.create({
         fontSize: 15,
         //flex: 1,
         marginTop: -10,
-        maxWidth: width * 0.5
+        maxWidth: width * 0.5,
     },
     timeline: {
-       // marginTop: 10,
-      //  marginStart: -5,
+        // marginTop: 10,
+        //  marginStart: -5,
     },
     timeContainer: {
         minWidth: width,

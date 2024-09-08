@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Platform } from "react-native";
 import React from "react";
 import { Picker } from "@react-native-picker/picker";
 
@@ -70,7 +70,7 @@ const TimerPicker = ({ timerValues, onChange }: { timerValues: TimerValues, onCh
 // Styles for the component
 const styles = StyleSheet.create({
     picker: {
-        height: 150, // Adjust height to control how many items are visible
+        height: Platform.OS === 'android' ? 113 : 150, // Adjust height to control how many items are visible
         width: 90,
     },
     pickerItem: {
