@@ -13,7 +13,7 @@ public class Step {
                 "time=" + time +
                 ", id=" + id +
                 ", description='" + description + '\'' +
-                ", recipe=" + recipe.getId() +
+                ", recipe=" + recipe.getId()  +
                 '}';
     }
 

@@ -43,7 +43,7 @@ public class Recipe {
                 ", coffeeAmount=" + coffeeAmount +
                 ", coffeeRatio=" + coffeeRatio +
                 ", steps=" + steps +
-                "appUserId=" + (appUser != null ? appUser.getId() : "null") +
+                ", appUserId=" + (appUser != null ? appUser.getId() : "null") +
                 '}';
     }
 }

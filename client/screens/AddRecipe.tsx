@@ -17,6 +17,8 @@ import AddStepBottomSheet from "../components/AddStepBottomSheet";
 import { Feather } from "@expo/vector-icons";
 import Timeline from "react-native-timeline-flatlist";
 import { Recipe } from "../types/Recipe";
+import useAxios from "../utils/useAxios";
+import { API_URL } from "../context/AuthContext";
 
 const width = Dimensions.get("screen").width;
 const height = Dimensions.get("screen").height;
@@ -28,6 +30,8 @@ export interface Step {
 }
 
 const AddRecipe = () => {
+    const api = useAxios();
+
     const [name, setName] = useState<string>("");
     const [brewer, setBrewer] = useState<string>("");
     const [grinder, setGrinder] = useState<string>("");
@@ -36,48 +40,8 @@ const AddRecipe = () => {
     const [waterAmount, setWaterAmount] = useState<number>(0);
     const [coffeeAmount, setCoffeeAmount] = useState<number>(0);
     const coffeeRatio = ~~(waterAmount / coffeeAmount);
-    const [steps, setSteps] = useState<Step[]>([
-        {
-            description: "Grind 20g of coffee",
-            time: 123,
-            title: "Grind coffee",
-        },
-        {
-            description: "Heat 300ml of water to 90°C",
-            time: 30,
-            title: "Heat water",
-        },
-        {
-            description: "Grind 20g of coffee",
-            time: 123,
-            title: "Grind coffee",
-        },
-        {
-            description: "Heat 300ml of water to 90°C",
-            time: 30,
-            title: "Heat water",
-        },
-        {
-            description: "Grind 20g of coffee",
-            time: 123,
-            title: "Grind coffee",
-        },
-        {
-            description: "Heat 300ml of water to 90°C",
-            time: 30,
-            title: "Heat water",
-        },
-        {
-            description: "Grind 20g of coffee",
-            time: 123,
-            title: "Grind coffee",
-        },
-        {
-            description: "Heat 300ml of water to 90°C",
-            time: 30,
-            title: "Heat water",
-        },
-    ]);
+    const [steps, setSteps] = useState<Step[]>([]);
+    const [resetKey, setResetKey] = useState(0);
 
     const deleteStep = (stepToDelete: Step) => {
         setSteps((prevSteps) =>
@@ -152,7 +116,7 @@ const AddRecipe = () => {
         bottomSheetRef.current?.dismiss();
     };
 
-    const onSave = () => {
+    const onSave = async () => {
         const newRecipe: Recipe = {
             name: name,
             brewer: brewer,
@@ -165,7 +129,31 @@ const AddRecipe = () => {
             steps: steps,
         };
 
-        console.log(newRecipe);
+        if (
+            newRecipe.name === "" ||
+            newRecipe.brewer === "" ||
+            newRecipe.grinder === ""
+        ) {
+            alert("Name, brewer and grinder are mandatory!");
+        } else {
+            try {
+                const result = await api.post(`${API_URL}/recipes`, newRecipe);
+                setName("");
+                setBrewer("");
+                setGrinder("");
+                setGrinderSettings(0);
+                setTemperature(0);
+                setWaterAmount(0);
+                setCoffeeAmount(0);
+                setSteps([]);
+                setResetKey(resetKey + 1);
+                return result.data;
+            } catch (e: any) {
+                const errorMessage =
+                    e.response.data.error || "An error occurred";
+                return { error: true, msg: errorMessage };
+            }
+        }
     };
 
     return (
@@ -175,7 +163,13 @@ const AddRecipe = () => {
                     style={{ alignSelf: "flex-end", flexDirection: "row" }}
                     onPress={() => onSave()}
                 >
-                    <Text style={{ fontFamily: "light", fontSize: 15, color: COLORS.espresso }}>
+                    <Text
+                        style={{
+                            fontFamily: "light",
+                            fontSize: 15,
+                            color: COLORS.espresso,
+                        }}
+                    >
                         Save{" "}
                     </Text>
                     <Feather name="save" size={20} color={COLORS.espresso} />
@@ -198,12 +192,14 @@ const AddRecipe = () => {
                     onChange={setBrewer}
                     text="Brewer"
                     data={brewers}
+                    resetKey={resetKey}
                 />
                 <SelectListCustom
                     value={grinder}
                     onChange={setGrinder}
                     text="Grinder"
                     data={grinders}
+                    resetKey={resetKey}
                 />
                 <Text
                     style={[

@@ -6,6 +6,7 @@ import { Feather } from "@expo/vector-icons";
 
 const SelectListCustom = ({
     value,
+    resetKey,
     onChange,
     text,
     data,
@@ -14,12 +15,13 @@ const SelectListCustom = ({
     onChange: Function;
     text: string;
     data: [];
+    resetKey: number,
 }) => {
     return (
         <View style={{ marginTop: 5 }}>
             <Text style={styles.mediumText}>{text}:</Text>
             <SelectList
-                setSelected={(value) => onChange(value)}
+                setSelected={onChange}
                 data={data}
                 save="value"
                 fontFamily="regular"
@@ -45,6 +47,8 @@ const SelectListCustom = ({
                     marginLeft: -15,
                 }}
                 dropdownStyles={{ borderColor: COLORS.espresso }}
+                defaultOption={{key: "", value: ""}}
+                key={resetKey}
             />
         </View>
     );
