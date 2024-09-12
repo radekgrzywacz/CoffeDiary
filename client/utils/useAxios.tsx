@@ -27,6 +27,7 @@ const useAxios = () => {
     try {
       if (authState) {
         let refreshToken = await SecureStore.getItemAsync(REFRESH_TOKEN_KEY); // Await here
+        console.log(refreshToken)
         const response = await axios.post(
           `${baseURL}/auth/refresh_token`,
           {},

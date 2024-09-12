@@ -1,8 +1,10 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Dimensions } from "react-native";
 import React from "react";
 import { COLORS } from "../constants/colors";
 import { SelectList } from "react-native-dropdown-select-list";
 import { Feather } from "@expo/vector-icons";
+
+const width = Dimensions.get("screen").width;
 
 const SelectListCustom = ({
     value,
@@ -40,6 +42,7 @@ const SelectListCustom = ({
                     padding: 1,
                     borderColor: COLORS.espresso,
                     height: 45,
+                    width: width*0.9
                 }}
                 inputStyles={{
                     fontSize: 19,
