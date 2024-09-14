@@ -21,14 +21,12 @@ public class RecipeController {
     private JWTUtils jwtUtils;
 
     @PostMapping
-    public ResponseEntity<RequestResponse> addRecipe(@RequestHeader("Authorization") String token, @RequestBody Recipe recipe) {
-        token = token.substring(7);
-        String username = jwtUtils.extractUsername(token);
-        return recipeService.addRecipe(recipe, username);
+    public ResponseEntity<RequestResponse> addRecipe(@RequestBody Recipe recipe) {
+        return recipeService.addRecipe(recipe);
     }
 
     @GetMapping("/{brewer}")
-    public ResponseEntity<List<RecipeNamesResponse>> getRecipesTitlesForBrewer(@RequestHeader("Authorization") String token, @PathVariable String brewer) {
+    public ResponseEntity<List<RecipeNamesResponse>> getRecipesTitlesForBrewer(@PathVariable String brewer) {
         return recipeService.getRecipesTitlesForBrewer(brewer);
     }
 }

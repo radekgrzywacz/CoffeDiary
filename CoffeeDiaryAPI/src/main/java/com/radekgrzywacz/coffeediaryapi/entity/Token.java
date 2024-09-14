@@ -20,4 +20,13 @@ public class Token {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private AppUser user;
+
+    @Override
+    public String toString() {
+        return "Token{" +
+                "id=" + id +
+                ", token='" + token + '\'' +
+                ", userID=" + (user != null ? user.getId() : " null ") +
+                '}';
+    }
 }

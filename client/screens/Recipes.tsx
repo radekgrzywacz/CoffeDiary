@@ -14,9 +14,8 @@ import useAxios from "../utils/useAxios";
 import { API_URL } from "../context/AuthContext";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Feather } from "@expo/vector-icons";
+import { height, width } from "../constants/screen";
 
-const height = Dimensions.get("screen").height;
-const width = Dimensions.get("screen").width;
 
 interface recipeNames {
     name: string;

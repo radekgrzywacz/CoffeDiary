@@ -19,9 +19,10 @@ import Timeline from "react-native-timeline-flatlist";
 import { Recipe } from "../types/Recipe";
 import useAxios from "../utils/useAxios";
 import { API_URL } from "../context/AuthContext";
+import { height, width } from "../constants/screen";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { useBrewers } from "../context/BrewerContext";
 
-const width = Dimensions.get("screen").width;
-const height = Dimensions.get("screen").height;
 
 export interface Step {
     time: number;
@@ -91,15 +92,9 @@ const AddRecipe = () => {
     const isRatioReady =
         waterAmount !== 0 && coffeeAmount !== 0 && coffeeRatio !== 0;
 
-    const brewers = [
-        { key: "1", value: "V60", disabled: false },
-        { key: "2", value: "Aeropress" },
-        { key: "3", value: "Origami" },
-        { key: "4", value: "French press", disabled: false },
-        { key: "5", value: "Moka pot" },
-        { key: "6", value: "Espresso" },
-        { key: "7", value: "Drinks" },
-    ];
+    const {brewers} = useBrewers(); 
+    const brewerNames: string[] = brewers.map(brewer => brewer.name);
+
 
     const grinders = [
         { key: "1", value: "Timemore c2", disabled: false },
@@ -191,7 +186,7 @@ const AddRecipe = () => {
                     value={brewer}
                     onChange={setBrewer}
                     text="Brewer"
-                    data={brewers}
+                    data={brewerNames}
                     resetKey={resetKey}
                 />
                 <SelectListCustom
@@ -271,7 +266,6 @@ const AddRecipe = () => {
                     onAddStep={handleAddStep}
                     close={handleCloseModal}
                 />
-                {/* <Button onPress={() => console.log(steps)} title="Steps" /> */}
 
                 <Timeline
                     data={steps}

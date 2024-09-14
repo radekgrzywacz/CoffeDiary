@@ -2,44 +2,58 @@ import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 export type RootStackParamList = {
-  Login: undefined; // No params expected for Login
-  Register: undefined; // No params expected for Register
-  // Add other screens here if needed
+    Login: undefined;
+    Register: undefined;
+    ProfileScreen: undefined;
+    Brewers: undefined;
+    Grinders: undefined;
 };
 
 export type RootTabParamList = {
-  Profile: undefined;
-  Home: undefined;
-  Diary: undefined;
-  Recipes: undefined
-  New: undefined
+    Profile: undefined;
+    Home: undefined;
+    Diary: undefined;
+    Recipes: undefined;
+    New: undefined;
 };
 
 export type LoginScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  "Login"
+    RootStackParamList,
+    "Login"
 >;
 export type RegisterScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  "Register"
+    RootStackParamList,
+    "Register"
 >;
 export type ProfileScreenNavigationProp = BottomTabNavigationProp<
-  RootTabParamList,
-  "Profile"
+    RootTabParamList,
+    "Profile"
 >;
 export type HomeScreenNavigationProp = BottomTabNavigationProp<
-  RootTabParamList,
-  "Home"
+    RootTabParamList,
+    "Home"
 >;
 export type DiaryScreenNavigationProp = BottomTabNavigationProp<
-  RootTabParamList,
-  "Diary"
+    RootTabParamList,
+    "Diary"
 >;
 export type RecipesScreenNavigationProp = BottomTabNavigationProp<
-  RootTabParamList,
-  "Recipes"
+    RootTabParamList,
+    "Recipes"
 >;
 export type NewScreenNavigationProp = BottomTabNavigationProp<
-  RootTabParamList,
-  "New"
+    RootTabParamList,
+    "New"
+>;
+export type BrewersScreenNavigationProp = StackNavigationProp<
+    RootStackParamList,
+    "Brewers"
+>;
+export type GrindersScreenNavigationProp = StackNavigationProp<
+    RootStackParamList,
+    "Grinders"
+>;
+export type ProfileScreenScreenNavigationProp = StackNavigationProp<
+    RootStackParamList,
+    "ProfileScreen"
 >;

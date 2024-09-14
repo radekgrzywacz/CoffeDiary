@@ -18,6 +18,7 @@ import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Picker } from "@react-native-picker/picker";
 import TimerPicker from "./TimerPicker";
 import { Step } from "../screens/AddRecipe";
+import { width } from "../constants/screen";
 
 interface Props {
     onAddStep: (step: Step) => void;
@@ -30,9 +31,6 @@ interface TimerValues {
 }
 
 type Ref = BottomSheetModal;
-
-const width = Dimensions.get("screen").width;
-const height = Dimensions.get("screen").height;
 
 const AddStepBottomSheet = forwardRef<Ref, Props>((props, ref) => {
     const snapPoints = useMemo(() => ["25%", "45%", "75%"], []);

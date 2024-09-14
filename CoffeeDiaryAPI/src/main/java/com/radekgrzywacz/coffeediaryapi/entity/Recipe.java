@@ -28,7 +28,7 @@ public class Recipe {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "app_user_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private AppUser appUser;
+    private AppUser user;
 
     @Override
     public String toString() {
@@ -43,7 +43,7 @@ public class Recipe {
                 ", coffeeAmount=" + coffeeAmount +
                 ", coffeeRatio=" + coffeeRatio +
                 ", steps=" + steps +
-                ", appUserId=" + (appUser != null ? appUser.getId() : "null") +
+                ", userId=" + (user != null ? user.getId() : "null") +
                 '}';
     }
 }

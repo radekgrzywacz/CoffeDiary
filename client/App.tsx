@@ -13,6 +13,11 @@ import { AuthProvider } from "./context/AuthContext";
 import { COLORS } from "./constants/colors";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import { createIconSet } from "@expo/vector-icons";
+import glyphMap from "./assets/fonts/unicodesMap.json";
+import { BrewerProvider } from "./context/BrewerContext";
+
+export const CoffeeIcon = createIconSet(glyphMap, "Coffee", "Coffee.ttf");
 
 export default function App() {
     const [fontsLoaded] = useFonts({
@@ -22,6 +27,7 @@ export default function App() {
         light: require("./assets/fonts/Poppins-Light.ttf"),
         medium: require("./assets/fonts/Poppins-Medium.ttf"),
         semibold: require("./assets/fonts/Poppins-SemiBold.ttf"),
+        Coffee: require("./assets/fonts/Coffee.ttf"),
     });
 
     if (!fontsLoaded) {
@@ -38,7 +44,9 @@ export default function App() {
             <BottomSheetModalProvider>
                 <View style={styles.AndroidSafeArea}>
                     <AuthProvider>
-                        <MainNavigator />
+                        <BrewerProvider>
+                            <MainNavigator />
+                        </BrewerProvider>
                     </AuthProvider>
                 </View>
             </BottomSheetModalProvider>

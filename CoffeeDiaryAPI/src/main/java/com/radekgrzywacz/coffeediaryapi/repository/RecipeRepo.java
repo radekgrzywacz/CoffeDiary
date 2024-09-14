@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface RecipeRepo extends JpaRepository<Recipe, Integer> {
 
-    List<Recipe> findAllByAppUserId(int appUserId);
+    List<Recipe> findAllByUserId(int appUserId);
 
-    @Query("SELECT new com.radekgrzywacz.coffeediaryapi.dto.RecipeNamesResponse(r.id, r.name) FROM Recipe r WHERE r.appUser.id = ?1 AND r.brewer = ?2")
+    @Query("SELECT new com.radekgrzywacz.coffeediaryapi.dto.RecipeNamesResponse(r.id, r.name) FROM Recipe r WHERE r.user.id = ?1 AND r.brewer = ?2")
     List<RecipeNamesResponse> findRecipesByAppUserIdAndBrewer(Integer appUserId, String brewer);
 }

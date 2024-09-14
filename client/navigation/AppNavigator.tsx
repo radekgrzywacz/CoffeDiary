@@ -10,6 +10,7 @@ import Diary from "../screens/Diary";
 import { TabBar } from "../components/TabBar";
 import Recipes from "../screens/Recipes";
 import New from "../screens/New";
+import ProfileStack from "./ProfileSectionsNavigator";
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
@@ -33,7 +34,7 @@ const AppNavigator = () => {
       <Tab.Screen name="Recipes" component={Recipes} />
       <Tab.Screen name="New" component={New} />
       <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Profile" component={Profile} />
+      <Tab.Screen name="Profile" component={ProfileStack} />
     </Tab.Navigator>
   );
 };

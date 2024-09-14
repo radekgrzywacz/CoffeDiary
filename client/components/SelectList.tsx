@@ -3,6 +3,7 @@ import React from "react";
 import { COLORS } from "../constants/colors";
 import { SelectList } from "react-native-dropdown-select-list";
 import { Feather } from "@expo/vector-icons";
+import { height } from "../constants/screen";
 
 const width = Dimensions.get("screen").width;
 
@@ -49,7 +50,7 @@ const SelectListCustom = ({
                     marginTop: -6,
                     marginLeft: -15,
                 }}
-                dropdownStyles={{ borderColor: COLORS.espresso }}
+                dropdownStyles={{ borderColor: COLORS.espresso}}
                 defaultOption={{key: "", value: ""}}
                 key={resetKey}
             />

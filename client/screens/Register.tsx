@@ -13,12 +13,11 @@ import { RegisterScreenNavigationProp } from "../types/navigationTypes";
 import { useState } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useAuth } from "../context/AuthContext";
+import { height, width } from "../constants/screen";
 
 interface RegisterProps {
   navigation: RegisterScreenNavigationProp;
 }
-
-const screen = Dimensions.get("screen");
 
 export default function Register({ navigation }: RegisterProps) {
   const [username, setUsername] = useState("test");
@@ -137,7 +136,7 @@ export default function Register({ navigation }: RegisterProps) {
           style={{
             alignSelf: "center",
             flexDirection: "row",
-            width: screen.width * 0.9,
+            width: width * 0.9,
             paddingHorizontal: 10,
           }}
         >
@@ -145,7 +144,7 @@ export default function Register({ navigation }: RegisterProps) {
             style={{
               borderWidth: 0.6,
               borderColor: COLORS.espresso,
-              width: screen.width * 0.4,
+              width: width * 0.4,
               height: 1,
               marginTop: 10,
               marginStart: "-3.7%",
@@ -164,7 +163,7 @@ export default function Register({ navigation }: RegisterProps) {
             style={{
               borderWidth: 0.6,
               borderColor: COLORS.espresso,
-              width: screen.width * 0.4,
+              width: width * 0.4,
               height: 1,
               marginTop: 10,
             }}
@@ -178,7 +177,7 @@ export default function Register({ navigation }: RegisterProps) {
           </View>
         </TouchableOpacity>
       </View>
-      <View style={{ position: "absolute", bottom: screen.height * 0.02 }}>
+      <View style={{ position: "absolute", bottom: height * 0.02 }}>
         <TouchableOpacity
           style={{ flexDirection: "row", alignSelf: "center" }}
           onPress={() => navigation.navigate("Login")}
@@ -201,8 +200,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.almond,
   },
   logo: {
-    width: screen.width * 0.5,
-    height: screen.height * 0.3,
+    width: width * 0.5,
+    height: height * 0.3,
   },
   logoFont: {
     fontFamily: "bold",
@@ -215,13 +214,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   form: {
-    height: screen.height * 0.05,
-    width: screen.width * 0.8,
+    height: height * 0.05,
+    width: width * 0.8,
     borderWidth: 3,
     borderRadius: 8,
     borderColor: COLORS.espresso,
     backgroundColor: COLORS.vanilla,
-    marginTop: screen.height * 0.01,
+    marginTop: height * 0.01,
     flexDirection: "row",
     paddingStart: 10,
   },
@@ -237,13 +236,13 @@ const styles = StyleSheet.create({
     color: COLORS.espresso,
   },
   submitButton: {
-    height: screen.height * 0.05,
-    width: screen.width * 0.8,
+    height: height * 0.05,
+    width: width * 0.8,
     borderWidth: 3,
     borderRadius: 8,
     borderColor: COLORS.espresso,
     backgroundColor: COLORS.pistache,
-    marginTop: screen.height * 0.01,
+    marginTop: height * 0.01,
     alignItems: "center",
   },
   submitText: {
@@ -256,12 +255,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderColor: "blue",
     backgroundColor: "white",
-    marginTop: screen.height * 0.01,
+    marginTop: height * 0.01,
     alignItems: "center",
-    width: screen.width * 0.8,
+    width: width * 0.8,
   },
   bar: {
-    marginStart: screen.width * 0.05,
-    marginTop: screen.height * 0.01,
+    marginStart: width * 0.05,
+    marginTop: height * 0.01,
   },
 });

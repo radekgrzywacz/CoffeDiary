@@ -25,29 +25,28 @@ public class RecipeService {
     @Autowired
     private AppUserRepo userRepository;
 
-    public ResponseEntity<RequestResponse> addRecipe(Recipe recipe, String username) {
-        Optional<AppUser> appUser = userRepository.findByUsername(username);
-        if (appUser.isPresent()) {
-            // Set the user
-            recipe.setAppUser(appUser.get());
-
-            // Ensure that all steps in the recipe are properly linked to the recipe
-            if (recipe.getSteps() != null) {
-                recipe.getSteps().forEach(step -> step.setRecipe(recipe));
-            }
-
-            Recipe savedRecipe = recipeRepository.save(recipe);
-            RequestResponse requestResponse = new RequestResponse();
-
-            if (savedRecipe != null) {
-                requestResponse.setResponse(savedRecipe.toString());
-                return ResponseEntity.ok().body(requestResponse);
-            }
+    public ResponseEntity<RequestResponse> addRecipe(Recipe recipe) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof AppUser user)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
-        RequestResponse errorResponse = new RequestResponse();
-        errorResponse.setError("Couldn't save recipe");
-        return ResponseEntity.badRequest().body(errorResponse);
+        recipe.setUser(user);
+
+        if (recipe.getSteps() != null) {
+            recipe.getSteps().forEach(step -> step.setRecipe(recipe));
+        }
+
+        Recipe savedRecipe = recipeRepository.save(recipe);
+        RequestResponse requestResponse = new RequestResponse();
+
+        if (savedRecipe != null) {
+            requestResponse.setResponse(savedRecipe.toString());
+            return ResponseEntity.ok().body(requestResponse);
+        } else {
+            requestResponse.setError("Couldn't save recipe");
+            return ResponseEntity.badRequest().body(requestResponse);
+        }
     }
 
     public ResponseEntity<List<RecipeNamesResponse>> getRecipesTitlesForBrewer(String brewer) {

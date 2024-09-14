@@ -1,5 +1,6 @@
 package com.radekgrzywacz.coffeediaryapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -32,12 +33,15 @@ public class AppUser implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Recipe> recipes;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Token> tokens;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Brewer> brewers;
 
 
     @Override
@@ -68,11 +72,11 @@ public class AppUser implements UserDetails {
     @Override
     public String toString() {
         return "AppUser{" +
-                "Id=" + Id +
-                ", username='" + username + '\'' +
-                ", email='" + email + '\'' +
+                "role=" + role +
                 ", password='" + password + '\'' +
-                ", role=" + role +
+                ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
+                ", Id=" + Id +
                 '}';
     }
 }
