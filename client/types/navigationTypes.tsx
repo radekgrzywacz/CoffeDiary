@@ -7,13 +7,16 @@ export type RootStackParamList = {
     ProfileScreen: undefined;
     Brewers: undefined;
     Grinders: undefined;
+    BrewerDetails: undefined;
+    Recipes: undefined;
+    Recipe: undefined;
 };
 
 export type RootTabParamList = {
     Profile: undefined;
+    Recipes: undefined;
     Home: undefined;
     Diary: undefined;
-    Recipes: undefined;
     New: undefined;
 };
 
@@ -53,7 +56,19 @@ export type GrindersScreenNavigationProp = StackNavigationProp<
     RootStackParamList,
     "Grinders"
 >;
+export type RecipesListScreenNavigationProp = StackNavigationProp<
+    RootStackParamList,
+    "Recipes"
+>;
 export type ProfileScreenScreenNavigationProp = StackNavigationProp<
     RootStackParamList,
     "ProfileScreen"
+>;
+export type BrewerDetailsScreenNavigationProp = StackNavigationProp<
+    RootStackParamList,
+    "BrewerDetails"
+>;
+export type RecipeDetailScreenNavigationProp = StackNavigationProp<
+    RootStackParamList,
+    "Recipe"
 >;

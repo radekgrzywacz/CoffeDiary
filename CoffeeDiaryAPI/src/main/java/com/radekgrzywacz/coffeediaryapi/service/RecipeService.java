@@ -1,11 +1,9 @@
 package com.radekgrzywacz.coffeediaryapi.service;
 
-import com.radekgrzywacz.coffeediaryapi.dto.RecipeNamesRequest;
 import com.radekgrzywacz.coffeediaryapi.dto.RecipeNamesResponse;
 import com.radekgrzywacz.coffeediaryapi.dto.RequestResponse;
 import com.radekgrzywacz.coffeediaryapi.entity.AppUser;
 import com.radekgrzywacz.coffeediaryapi.entity.Recipe;
-import com.radekgrzywacz.coffeediaryapi.repository.AppUserRepo;
 import com.radekgrzywacz.coffeediaryapi.repository.RecipeRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,15 +13,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class RecipeService {
 
     @Autowired
     private RecipeRepo recipeRepository;
-    @Autowired
-    private AppUserRepo userRepository;
 
     public ResponseEntity<RequestResponse> addRecipe(Recipe recipe) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -65,7 +60,16 @@ public class RecipeService {
             }
         }
 
-        return ResponseEntity.badRequest().body(null);
+        return ResponseEntity.notFound().build();
+    }
+
+    public ResponseEntity<Recipe> getRecipe(int id) {
+        Recipe recipe = recipeRepository.findById(id).get();
+
+        if (recipe != null) {
+            return ResponseEntity.ok().body(recipe);
+        }
+
+        return ResponseEntity.notFound().build();
     }
 }
-

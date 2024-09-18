@@ -35,18 +35,20 @@ const AddBrewerBottomSheet = forwardRef<Ref, Props>((props, ref) => {
     );
 
     const onSubmit = () => {
-        if(name !== "") {
+        if (name !== "") {
             const newBrewer: Brewer = {
+                id: undefined,
                 name: name,
-                description: description
+                description: description,
             };
             props.onAddBrewer(newBrewer);
             setName("");
             setDescription("");
+            props.close();
         } else {
             alert("Please insert name.");
         }
-    }
+    };
 
     return (
         <BottomSheetModal

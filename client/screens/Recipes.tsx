@@ -3,7 +3,6 @@ import {
     Text,
     StyleSheet,
     SafeAreaView,
-    Dimensions,
     FlatList,
     Platform,
 } from "react-native";
@@ -15,30 +14,32 @@ import { API_URL } from "../context/AuthContext";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Feather } from "@expo/vector-icons";
 import { height, width } from "../constants/screen";
-
+import { useBrewers } from "../context/BrewerContext";
+import { Brewer } from "../types/Brewer";
+import { RecipesScreenNavigationProp } from "../types/navigationTypes";
 
 interface recipeNames {
     name: string;
     id: number;
 }
 
-const Recipes = () => {
+interface RecipesProps {
+    navigation: RecipesScreenNavigationProp;
+}
+
+const Recipes = ({ navigation }: RecipesProps) => {
     let api = useAxios();
 
     const [resetKey, setResetKey] = useState(0);
     const [brewer, setBrewer] = useState("");
     const [recipes, setRecipes] = useState<recipeNames[]>([]);
     const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
+    const { brewers } = useBrewers();
 
-    const brewers = [
-        { key: "1", value: "V60", disabled: false },
-        { key: "2", value: "Aeropress" },
-        { key: "3", value: "Origami" },
-        { key: "4", value: "French press", disabled: false },
-        { key: "5", value: "Moka pot" },
-        { key: "6", value: "Espresso" },
-        { key: "7", value: "Drinks" },
-    ];
+    const formattedBrewers = brewers.map((brewer: Brewer) => ({
+        key: brewer.id.toString(),
+        value: brewer.name,
+    }));
 
     const getRecipes = async () => {
         if (brewer === "") {
@@ -70,7 +71,7 @@ const Recipes = () => {
     const Item = ({ name, id }: ItemProps) => {
         return (
             <TouchableOpacity
-                onPress={() => console.log("Going to recipe ", id)}
+                onPress={() => navigation.navigate("Recipe", { id })}
             >
                 <View style={styles.item}>
                     <View style={{ flex: 1 }}>
@@ -95,7 +96,7 @@ const Recipes = () => {
                     resetKey={resetKey}
                     onChange={setBrewer}
                     text="Select your brewer"
-                    data={brewers}
+                    data={formattedBrewers}
                 />
                 {brewer === "" ? (
                     <Text style={styles.infoText}>
@@ -103,7 +104,14 @@ const Recipes = () => {
                         brewer.
                     </Text>
                 ) : recipes.length > 0 ? (
-                    <View style={[styles.listBackground, Platform.OS === "ios" ? styles.shadow : styles.elevation]}>
+                    <View
+                        style={[
+                            styles.listBackground,
+                            Platform.OS === "ios"
+                                ? styles.shadow
+                                : styles.elevation,
+                        ]}
+                    >
                         <FlatList
                             data={recipes}
                             renderItem={({ item }) => (
@@ -116,7 +124,7 @@ const Recipes = () => {
                                         borderBottomWidth: 2,
                                         borderBottomColor: COLORS.espresso,
                                         width: width * 0.85,
-                                        alignSelf: "center"
+                                        alignSelf: "center",
                                     }}
                                 ></View>
                             )}
@@ -178,12 +186,12 @@ const styles = StyleSheet.create({
     shadow: {
         shadowOffset: {
             width: 2,
-            height: 2
+            height: 2,
         },
         shadowOpacity: 0.3,
-        shadowRadius: 5
+        shadowRadius: 5,
     },
     elevation: {
-        elevation: 5
-    }
+        elevation: 5,
+    },
 });

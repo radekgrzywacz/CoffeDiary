@@ -1,5 +1,6 @@
 export interface Brewer {
-    id: number,
-    name: string,
-    description: string,
+    id: number | undefined;
+    name: string;
+    description: string;
 }
+

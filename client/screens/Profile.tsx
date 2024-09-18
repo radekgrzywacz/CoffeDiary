@@ -32,7 +32,7 @@ const Profile = ({ navigation }: ProfileProps) => {
             await onLogout();
         } else {
             console.error("onLogout is undefined");
-       }
+        }
     };
 
     const testReq = async () => {
@@ -74,9 +74,9 @@ const Profile = ({ navigation }: ProfileProps) => {
                         />
                     </View>
                 </View>
-                <View style={{marginTop: 10}}>
+                <View style={{ marginTop: 10 }}>
                     <Text style={styles.mediumText}>Settings:</Text>
-                    <View 
+                    <View
                         style={[
                             styles.sectionBox,
                             Platform.OS === "ios"

@@ -1,10 +1,8 @@
 package com.radekgrzywacz.coffeediaryapi.controller;
 
-import com.radekgrzywacz.coffeediaryapi.dto.RecipeNamesRequest;
 import com.radekgrzywacz.coffeediaryapi.dto.RecipeNamesResponse;
 import com.radekgrzywacz.coffeediaryapi.dto.RequestResponse;
 import com.radekgrzywacz.coffeediaryapi.entity.Recipe;
-import com.radekgrzywacz.coffeediaryapi.service.JWTUtils;
 import com.radekgrzywacz.coffeediaryapi.service.RecipeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,16 +15,23 @@ import java.util.List;
 public class RecipeController {
     @Autowired
     private RecipeService recipeService;
-    @Autowired
-    private JWTUtils jwtUtils;
 
     @PostMapping
     public ResponseEntity<RequestResponse> addRecipe(@RequestBody Recipe recipe) {
         return recipeService.addRecipe(recipe);
     }
 
-    @GetMapping("/{brewer}")
+    @GetMapping("/brewer/{brewer}")
     public ResponseEntity<List<RecipeNamesResponse>> getRecipesTitlesForBrewer(@PathVariable String brewer) {
         return recipeService.getRecipesTitlesForBrewer(brewer);
+    }
+
+    // Get a specific recipe by ID
+    @GetMapping("/id/{id}")
+    public ResponseEntity<Recipe> getRecipe(@PathVariable Integer id) {
+        if (id == null) {
+            return ResponseEntity.badRequest().build(); // Return 400 if ID is null
+        }
+        return recipeService.getRecipe(id);
     }
 }

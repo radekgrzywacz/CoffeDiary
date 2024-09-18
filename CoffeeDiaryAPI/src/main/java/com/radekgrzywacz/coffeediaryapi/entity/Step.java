@@ -1,5 +1,8 @@
 package com.radekgrzywacz.coffeediaryapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -13,7 +16,7 @@ public class Step {
                 "time=" + time +
                 ", id=" + id +
                 ", description='" + description + '\'' +
-                ", recipe=" + recipe.getId()  +
+                ", recipe=" + recipe.getId() +
                 '}';
     }
 
@@ -25,5 +28,6 @@ public class Step {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "recipe_id")
+    @JsonBackReference
     private Recipe recipe;
 }

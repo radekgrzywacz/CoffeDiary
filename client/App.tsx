@@ -5,7 +5,6 @@ import {
     ActivityIndicator,
     Platform,
     StatusBar,
-    SafeAreaView,
 } from "react-native";
 import { useFonts } from "expo-font";
 import MainNavigator from "./navigation/MainNavigator";

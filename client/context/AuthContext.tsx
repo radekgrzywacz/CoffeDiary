@@ -1,13 +1,7 @@
 import axios from "axios";
 import { Platform } from "react-native";
-import React, {
-    createContext,
-    FC,
-    ReactNode,
-    useContext,
-    useEffect,
-    useState,
-} from "react";
+import { jwtDecode } from "jwt-decode";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import * as Device from "expo-device";
 
@@ -31,7 +25,9 @@ export const TOKEN_KEY = "coffee_diary-JWT-access";
 export const REFRESH_TOKEN_KEY = "coffee_diary-JWT-refresh";
 export const API_URL = Device.isDevice
     ? "http://192.168.68.105:6060"
-    : Platform.OS === "android" ? "http://10.0.2.2:6060" : "http://localhost:6060";
+    : Platform.OS === "android"
+      ? "http://10.0.2.2:6060"
+      : "http://localhost:6060";
 
 const AuthContext = createContext<AuthProps>({});
 
@@ -53,29 +49,78 @@ export const AuthProvider = ({ children }: any) => {
     useEffect(() => {
         const loadToken = async () => {
             const token = await SecureStore.getItemAsync(TOKEN_KEY);
-            const refreshToken = await SecureStore.getItemAsync(
-                REFRESH_TOKEN_KEY
-            );
+            const refreshToken =
+                await SecureStore.getItemAsync(REFRESH_TOKEN_KEY);
             console.log(
                 "AuthContext.tsx: 55 ~ loadToken ~ stored token: ",
                 token
             );
 
-            if (token) {
-                axios.defaults.headers.common[
-                    "Authorization"
-                ] = `Bearer ${token}`;
+            const isAccessTokenExpired = checkTokenExpiry(token);
 
-                setAuthState({
-                    accessToken: token,
-                    refreshToken: refreshToken,
-                    authenticated: true,
-                });
+            if (isAccessTokenExpired) {
+                const isRefreshTokenExpired = checkTokenExpiry(refreshToken);
+                if (isRefreshTokenExpired) {
+                    console.log("Refresh token not valid, loggin out");
+                    logout();
+                } else {
+                    console.log(
+                        "Refresh token valid, access expired, before refreshing..."
+                    );
+                    const response = await axios.post(
+                        `${API_URL}/auth/refresh_token`,
+                        {},
+                        {
+                            headers: {
+                                Authorization: `Bearer ${refreshToken}`, // Correct headers placement
+                            },
+                        }
+                    );
+                    if (response) {
+                        await SecureStore.setItemAsync(
+                            TOKEN_KEY,
+                            response.data.accessToken
+                        );
+                        await SecureStore.setItemAsync(
+                            REFRESH_TOKEN_KEY,
+                            response.data.refreshToken
+                        );
+                        console.log("Refreshed on login");
+                        if (token) {
+                            axios.defaults.headers.common["Authorization"] =
+                                `Bearer ${token}`;
+
+                            setAuthState({
+                                accessToken: token,
+                                refreshToken: refreshToken,
+                                authenticated: true,
+                            });
+                        }
+                    }
+                }
+            } else {
+                if (token) {
+                    axios.defaults.headers.common["Authorization"] =
+                        `Bearer ${token}`;
+
+                    setAuthState({
+                        accessToken: token,
+                        refreshToken: refreshToken,
+                        authenticated: true,
+                    });
+                }
             }
         };
 
         loadToken();
     }, []);
+
+    const checkTokenExpiry = (token: string | null) => {
+        if (!token) return false;
+        const decodedToken: any = jwtDecode(token);
+        const currentTime = Math.floor(Date.now() / 1000);
+        return decodedToken.exp < currentTime;
+    };
 
     const register = async (
         username: string,
@@ -91,7 +136,7 @@ export const AuthProvider = ({ children }: any) => {
                 role,
             });
         } catch (e: any) {
-            console.log(e.response)
+            console.log(e.response);
             const errorMessage = e.response.data.error || "An error occurred";
             return { error: true, msg: errorMessage };
         }
@@ -113,9 +158,8 @@ export const AuthProvider = ({ children }: any) => {
             });
             console.log();
 
-            axios.defaults.headers.common[
-                "Authorization"
-            ] = `Bearer ${result.data.accessToken}`;
+            axios.defaults.headers.common["Authorization"] =
+                `Bearer ${result.data.accessToken}`;
 
             await SecureStore.setItemAsync(TOKEN_KEY, result.data.accessToken);
             await SecureStore.setItemAsync(
@@ -133,6 +177,7 @@ export const AuthProvider = ({ children }: any) => {
 
     const logout = async () => {
         await SecureStore.deleteItemAsync(TOKEN_KEY);
+        await SecureStore.deleteItemAsync(REFRESH_TOKEN_KEY);
 
         axios.defaults.headers.common["Authorization"] = "";
 

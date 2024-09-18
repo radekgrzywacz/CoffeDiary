@@ -49,10 +49,10 @@ public class BrewerService {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
         List<Brewer> brewers = brewerRepo.findAllByUserId(user.getId());
-        if(brewers != null && !brewers.isEmpty()) {
+        if (brewers != null && !brewers.isEmpty()) {
             return ResponseEntity.ok().body(brewers);
         } else {
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.notFound().build();
         }
     }
 }

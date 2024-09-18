@@ -25,7 +25,8 @@ public class UserController {
     private AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@Valid @RequestBody AppUser request, BindingResult bindingResult) {
+    public ResponseEntity<AuthenticationResponse> register(@Valid @RequestBody AppUser request,
+            BindingResult bindingResult) {
         return authService.register(request, bindingResult);
     }
 
@@ -39,25 +40,4 @@ public class UserController {
         return authService.refreshToken(request, response);
     }
 
-//    @PostMapping("/login")
-//    public ResponseEntity<RequestResponse> login(@RequestBody RequestResponse loginRequest) {
-//        RequestResponse response = authService.login(loginRequest);
-//        if (response.getStatusCode() != 200) {
-//            return ResponseEntity.badRequest().body(response);
-//        }
-//
-//        return ResponseEntity.ok(response);
-//    }
-//
-//
-//    @PostMapping("/refresh")
-//    public ResponseEntity<RequestResponse> refreshToken(@Valid @RequestBody RequestResponse refreshTokenRequest) {
-//        try {
-//            return ResponseEntity.ok(authService.refreshToken(refreshTokenRequest));
-//        } catch (Exception e) {
-//            log.warn(e.getMessage());
-//            return ResponseEntity.badRequest().body(refreshTokenRequest);
-//        }
-//
-//    }
 }

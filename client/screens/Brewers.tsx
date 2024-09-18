@@ -1,11 +1,11 @@
 import React, { useRef, useCallback } from "react";
 import {
+    TouchableOpacity,
     View,
     Text,
     SafeAreaView,
     StyleSheet,
     Platform,
-    TouchableOpacity,
     FlatList,
 } from "react-native";
 import { COLORS } from "../constants/colors";
@@ -14,14 +14,18 @@ import { Feather } from "@expo/vector-icons";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import AddBrewerBottomSheet from "../components/AddBrewerBottomSheet";
 import { Brewer } from "../types/Brewer";
-import { useBrewers } from "../context/BrewerContext"; // Import the custom hook
+import { useBrewers } from "../context/BrewerContext";
+import { BrewersScreenNavigationProp } from "../types/navigationTypes";
 
-const Brewers = () => {
-    const { brewers, addBrewer } = useBrewers(); // Use context hook
+interface BrewersProps {
+    navigation: BrewersScreenNavigationProp;
+}
+
+const Brewers = ({ navigation }: BrewersProps) => {
+    const { brewers, addBrewer } = useBrewers();
 
     const bottomSheetRef = useRef<BottomSheetModal>(null);
 
-    // useCallback to ensure the function is not recreated unnecessarily
     const handlePresentModalPress = useCallback(() => {
         if (bottomSheetRef.current) {
             bottomSheetRef.current.present();
@@ -37,7 +41,7 @@ const Brewers = () => {
     const Item = ({ brewer }: ItemProps) => {
         return (
             <TouchableOpacity
-                onPress={() => console.log("Going to recipe ", brewer.id)}
+                onPress={() => console.log("Going to brewer ", brewer.id)}
             >
                 <View style={styles.item}>
                     <View style={{ flex: 1 }}>
@@ -69,10 +73,8 @@ const Brewers = () => {
                     >
                         <FlatList
                             data={brewers}
-                            renderItem={({ item }: { item: Brewer }) => (
-                                <Item brewer={item} />
-                            )}
-                            keyExtractor={(item) => item.id.toString()}
+                            renderItem={({ item }) => <Item brewer={item} />}
+                            //                            keyExtractor={(brewer) => brewer.id.toString()}
                             ItemSeparatorComponent={() => (
                                 <View
                                     style={{
@@ -86,22 +88,22 @@ const Brewers = () => {
                         />
                     </View>
                 ) : (
-                    <Text style={styles.mediumText}>
-                        Couldn't find any brewers
+                    <Text style={styles.infoText}>
+                        No brewers found, add one!
                     </Text>
                 )}
+                <TouchableOpacity
+                    onPress={handlePresentModalPress}
+                    style={styles.addCircle}
+                >
+                    <Feather name="plus-circle" size={50} color={COLORS.espresso} />
+                </TouchableOpacity>
+                <AddBrewerBottomSheet
+                    ref={bottomSheetRef}
+                    onAddBrewer={addBrewer} // Use context's addBrewer function
+                    close={handleCloseModal}
+                />
             </View>
-            <TouchableOpacity
-                onPress={handlePresentModalPress}
-                style={styles.addCircle}
-            >
-                <Feather name="plus-circle" size={50} color={COLORS.espresso} />
-            </TouchableOpacity>
-            <AddBrewerBottomSheet
-                ref={bottomSheetRef}
-                onAddBrewer={addBrewer} // Use context's addBrewer function
-                close={handleCloseModal}
-            />
         </SafeAreaView>
     );
 };
@@ -146,7 +148,7 @@ const styles = StyleSheet.create({
     },
     addCircle: {
         position: "absolute",
-        top: height * 0.80,
+        top: height * 0.8,
         left: width * 0.8,
         backgroundColor: COLORS.pistache,
         borderRadius: 30,
@@ -161,6 +163,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
+        flex: 1
     },
     title: {
         fontSize: 19,
