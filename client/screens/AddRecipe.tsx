@@ -4,9 +4,7 @@ import {
     SafeAreaView,
     StyleSheet,
     TouchableOpacity,
-    Dimensions,
     TextInput,
-    Button,
     Platform,
 } from "react-native";
 import React, { useRef, useState } from "react";

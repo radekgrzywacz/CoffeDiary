@@ -6,6 +6,7 @@ import {
     StyleSheet,
     ActivityIndicator,
     ScrollView,
+    Platform,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { COLORS } from "../constants/colors";
@@ -15,6 +16,7 @@ import useAxios from "../utils/useAxios";
 import { Recipe } from "../types/Recipe";
 import { height, width } from "../constants/screen";
 import { Step } from "../types/Step";
+import Timeline from "react-native-timeline-flatlist";
 
 type RecipeDetailsRouteProp = RouteProp<{ Recipe: { id: number } }, "Recipe">;
 interface TimerValues {
@@ -81,6 +83,33 @@ const RecipeDetails = () => {
             </View>
         );
     }
+
+    const renderDetail = (step: Step) => {
+        return (
+            <View style={styles.detailContainer}>
+                <View style={{ marginTop: -6 }}>
+                    <Text style={styles.detailText}>{step.description}</Text>
+                </View>
+            </View>
+        );
+    };
+
+    const renderTime = (step: Step) => {
+        const minutes = Math.floor(step.time / 60);
+        const seconds = step.time % 60;
+
+        // Conditional rendering based on minutes and seconds
+        return (
+            <View style={{ minWidth: 65 }}>
+                {step.time > 0 && (
+                    <Text>
+                        {minutes > 0 ? `${minutes} min ` : ""}
+                        {seconds > 0 || minutes > 0 ? `${seconds} s` : ""}
+                    </Text>
+                )}
+            </View>
+        );
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -188,6 +217,30 @@ const RecipeDetails = () => {
                         </View>
                     </View>
                 </View>
+                <View
+                    style={{
+                        backgroundColor: COLORS.espresso,
+                        height: 2,
+                        width: width * 0.9,
+                        marginVertical: 10,
+                        borderRadius: 10,
+                    }}
+                />
+                <Text style={styles.boldText}>Steps:</Text>
+                <Timeline
+                    data={recipe.steps}
+                    renderDetail={renderDetail}
+                    lineColor={COLORS.pistache}
+                    lineWidth={2}
+                    dotColor={COLORS.pistache}
+                    circleColor={COLORS.pistache}
+                    timeContainerStyle={{ minWidth: 72 }}
+                    style={{
+                        paddingBottom: Platform.OS === "android" ? 100 : 65,
+                        marginTop: 5,
+                    }}
+                    renderTime={renderTime}
+                />
             </ScrollView>
         </SafeAreaView>
     );
@@ -228,5 +281,20 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         marginHorizontal: 0,
         padding: 8,
+    },
+    detailContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        flexWrap: "wrap",
+        paddingHorizontal: 5,
+        //marginTop: -15,
+    },
+    detailText: {
+        fontFamily: "regular",
+        fontSize: 15,
+        //flex: 1,
+        marginTop: -10,
+        maxWidth: width * 0.5,
     },
 });
