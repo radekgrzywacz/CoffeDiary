@@ -17,8 +17,8 @@ import { TextInput } from "react-native-gesture-handler";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Picker } from "@react-native-picker/picker";
 import TimerPicker from "./TimerPicker";
-import { Step } from "../screens/AddRecipe";
 import { width } from "../constants/screen";
+import { Step } from "../types/Step";
 
 interface Props {
     onAddStep: (step: Step) => void;

@@ -46,7 +46,9 @@ const Recipes = ({ navigation }: RecipesProps) => {
             alert("You have to choose brewer");
         } else {
             try {
-                const result = await api.get(`${API_URL}/recipes/${brewer}`);
+                const result = await api.get(
+                    `${API_URL}/recipes/brewer/${brewer}`
+                );
                 setRecipes(result.data);
                 return result;
             } catch (e: any) {

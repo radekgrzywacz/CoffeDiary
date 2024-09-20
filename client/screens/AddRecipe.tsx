@@ -22,13 +22,7 @@ import { API_URL } from "../context/AuthContext";
 import { height, width } from "../constants/screen";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useBrewers } from "../context/BrewerContext";
-
-
-export interface Step {
-    time: number;
-    title: string;
-    description: string;
-}
+import { Step } from "../types/Step";
 
 const AddRecipe = () => {
     const api = useAxios();
@@ -92,9 +86,8 @@ const AddRecipe = () => {
     const isRatioReady =
         waterAmount !== 0 && coffeeAmount !== 0 && coffeeRatio !== 0;
 
-    const {brewers} = useBrewers(); 
-    const brewerNames: string[] = brewers.map(brewer => brewer.name);
-
+    const { brewers } = useBrewers();
+    const brewerNames: string[] = brewers.map((brewer) => brewer.name);
 
     const grinders = [
         { key: "1", value: "Timemore c2", disabled: false },

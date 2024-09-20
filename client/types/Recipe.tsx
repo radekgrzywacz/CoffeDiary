@@ -1,4 +1,4 @@
-import { Step } from "../screens/AddRecipe";
+import { Step } from "../screens/Step";
 
 export interface Recipe {
     name: string,

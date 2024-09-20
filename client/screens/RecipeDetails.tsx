@@ -1,20 +1,55 @@
-import { SafeAreaView, View, Text, StyleSheet } from "react-native";
-import React from "react";
+import {
+    Image,
+    SafeAreaView,
+    View,
+    Text,
+    StyleSheet,
+    ActivityIndicator,
+    ScrollView,
+} from "react-native";
+import React, { useEffect, useState } from "react";
 import { COLORS } from "../constants/colors";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { API_URL } from "../context/AuthContext";
 import useAxios from "../utils/useAxios";
+import { Recipe } from "../types/Recipe";
+import { height, width } from "../constants/screen";
+import { Step } from "../types/Step";
 
 type RecipeDetailsRouteProp = RouteProp<{ Recipe: { id: number } }, "Recipe">;
+interface TimerValues {
+    seconds: number;
+    minutes: number;
+}
 
 const RecipeDetails = () => {
     const route = useRoute<RecipeDetailsRouteProp>();
     const { id } = route.params;
     const api = useAxios();
+    const [recipe, setRecipe] = useState<Recipe>();
+    const [time, setTime] = useState<TimerValues>();
 
     const getRecipeDetails = async () => {
         try {
-            const fetchedRecipe = api.get(`${API_URL}/recipes/${id}`);
+            const result = await api.get(`${API_URL}/recipes/id/${id}`);
+            const data = result.data;
+            console.log(result.data);
+            const fetchedRecipe: Recipe = {
+                name: data.name,
+                brewer: data.brewer,
+                grinder: data.grinder,
+                clicks: data.clicks,
+                temperature: data.temperature,
+                waterAmount: data.waterAmount,
+                coffeeAmount: data.coffeeAmount,
+                coffeeRatio: data.coffeeRatio,
+                steps: data.steps.map((step: any) => ({
+                    time: step.time,
+                    title: `Step ${step.id}`,
+                    description: step.description,
+                })),
+            };
+            setRecipe(fetchedRecipe);
         } catch (e: any) {
             const errorMessage = e.response.data.error || "An error occurred";
             console.log(e);
@@ -22,9 +57,138 @@ const RecipeDetails = () => {
         }
     };
 
+    useEffect(() => {
+        getRecipeDetails();
+    }, []);
+
+    useEffect(() => {
+        if (recipe) {
+            let totalTime = 0;
+            recipe.steps.forEach((step: Step) => {
+                totalTime += step.time;
+            });
+            const minutes = Math.floor(totalTime / 60);
+            const seconds = totalTime % 60;
+            setTime({ minutes: minutes, seconds: seconds });
+        }
+    }, [recipe]);
+
+    if (!recipe || time === null) {
+        return (
+            <View style={[styles.container]}>
+                <ActivityIndicator size="large" />
+                <Text>Loading...</Text>
+            </View>
+        );
+    }
+
     return (
-        <SafeAreaView>
-            <Text>Recipe nr {id}</Text>
+        <SafeAreaView style={styles.container}>
+            <ScrollView style={styles.innerContainer}>
+                <Text style={styles.boldText}>{recipe.name}</Text>
+                <View
+                    style={{
+                        flexDirection: "row",
+                    }}
+                >
+                    {recipe.coffeeRatio !== 0 && (
+                        <View style={[styles.infoBox, { marginLeft: -0 }]}>
+                            <Text>1:{recipe.coffeeRatio}</Text>
+                        </View>
+                    )}
+                    {(time?.seconds > 0 || time?.minutes > 0) && (
+                        <View style={[styles.infoBox, { marginLeft: 5 }]}>
+                            <Text>
+                                {time?.minutes > 0
+                                    ? `${time.minutes} min `
+                                    : ""}
+                                {time?.seconds !== undefined
+                                    ? `${time.seconds} s`
+                                    : ""}
+                            </Text>
+                        </View>
+                    )}
+                </View>
+                <View style={styles.iconRow}>
+                    <View style={styles.iconBox}>
+                        <Image
+                            source={require("../assets/Coffee Machine Icon.png")}
+                            style={{ width: "70%", height: "60%" }}
+                        />
+                        <Text style={{ fontFamily: "semibold", marginTop: 10 }}>
+                            {recipe.brewer}
+                        </Text>
+                    </View>
+                    <View style={styles.iconBox}>
+                        <Image
+                            source={require("../assets/Coffee Bean Icon.png")}
+                            style={{ width: "70%", height: "60%" }}
+                        />
+                        <Text style={{ fontFamily: "semibold", marginTop: 10 }}>
+                            {recipe.coffeeAmount}g
+                        </Text>
+                    </View>
+                    <View style={styles.iconBox}>
+                        <Image
+                            source={require("../assets/Kettle Icon.png")}
+                            style={{ width: "70%", height: "50%" }}
+                        />
+                        <Text
+                            style={{
+                                fontFamily: "semibold",
+                                textAlign: "center",
+                                marginTop: 5,
+                            }}
+                        >
+                            {recipe.waterAmount}g{"\n"}
+                            {recipe.temperature}°C
+                        </Text>
+                    </View>
+                </View>
+                <View style={styles.iconRow}>
+                    <Text
+                        style={{
+                            alignSelf: "flex-start",
+                            fontFamily: "semibold",
+                            fontSize: 19,
+                        }}
+                    >
+                        Grind:
+                    </Text>
+                    <View style={{ flexDirection: "row" }}>
+                        <View
+                            style={[
+                                styles.infoBox,
+                                {
+                                    flexDirection: "row",
+                                    backgroundColor: COLORS.almondBright,
+                                    borderTopLeftRadius: 10,
+                                    borderBottomLeftRadius: 10,
+                                    borderTopRightRadius: 0,
+                                    borderBottomRightRadius: 0,
+                                },
+                            ]}
+                        >
+                            <Text>{recipe.grinder}</Text>
+                        </View>
+                        <View
+                            style={[
+                                styles.infoBox,
+                                {
+                                    flexDirection: "row",
+                                    backgroundColor: COLORS.matcha,
+                                    borderTopLeftRadius: 0,
+                                    borderBottomLeftRadius: 0,
+                                    borderTopRightRadius: 10,
+                                    borderBottomRightRadius: 10,
+                                },
+                            ]}
+                        >
+                            <Text>{recipe.clicks}</Text>
+                        </View>
+                    </View>
+                </View>
+            </ScrollView>
         </SafeAreaView>
     );
 };
@@ -38,11 +202,31 @@ const styles = StyleSheet.create({
         backgroundColor: COLORS.almond,
         paddingTop: 10,
     },
-    mediumText: {
-        fontFamily: "medium",
-        fontSize: 19,
+    boldText: {
+        fontFamily: "bold",
+        fontSize: 23,
     },
     innerContainer: {
         paddingHorizontal: 20,
+    },
+    iconBox: {
+        backgroundColor: COLORS.almondBright,
+        width: width * 0.25,
+        height: width * 0.35,
+        borderRadius: 10,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    iconRow: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        width: "100%",
+        marginTop: 20,
+    },
+    infoBox: {
+        backgroundColor: COLORS.almondBright,
+        borderRadius: 10,
+        marginHorizontal: 0,
+        padding: 8,
     },
 });
