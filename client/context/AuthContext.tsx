@@ -24,7 +24,7 @@ interface AuthProps {
 export const TOKEN_KEY = "coffee_diary-JWT-access";
 export const REFRESH_TOKEN_KEY = "coffee_diary-JWT-refresh";
 export const API_URL = Device.isDevice
-    ? "http://192.168.68.105:6060"
+    ? "http://192.168.0.170:6060"
     : Platform.OS === "android"
       ? "http://10.0.2.2:6060"
       : "http://localhost:6060";

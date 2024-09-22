@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     TextInput,
     Platform,
+    ScrollView,
 } from "react-native";
 import React, { useRef, useState } from "react";
 import { COLORS } from "../constants/colors";
@@ -144,7 +145,7 @@ const AddRecipe = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.innerContainer}>
+            <ScrollView style={styles.innerContainer}>
                 <TouchableOpacity
                     style={{ alignSelf: "flex-end", flexDirection: "row" }}
                     onPress={() => onSave()}
@@ -267,13 +268,13 @@ const AddRecipe = () => {
                     circleColor={COLORS.pistache}
                     timeContainerStyle={{ minWidth: 72 }}
                     style={{
-                        height: height * 0.2,
+                        //height: height * 0.2,
                         paddingBottom: Platform.OS === "android" ? 100 : 65,
                         marginTop: 5,
                     }}
                     renderTime={renderTime}
                 />
-            </View>
+            </ScrollView>
         </SafeAreaView>
     );
 };

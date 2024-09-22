@@ -7,6 +7,7 @@ import {
     ActivityIndicator,
     ScrollView,
     Platform,
+    TouchableOpacity,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { COLORS } from "../constants/colors";
@@ -17,14 +18,19 @@ import { Recipe } from "../types/Recipe";
 import { height, width } from "../constants/screen";
 import { Step } from "../types/Step";
 import Timeline from "react-native-timeline-flatlist";
+import App from "../App";
+import { RecipeDetailScreenNavigationProp } from "../types/navigationTypes";
 
 type RecipeDetailsRouteProp = RouteProp<{ Recipe: { id: number } }, "Recipe">;
+interface RecipesProps {
+    navigation: RecipeDetailScreenNavigationProp;
+}
 interface TimerValues {
     seconds: number;
     minutes: number;
 }
 
-const RecipeDetails = () => {
+const RecipeDetails = ({ navigation }: RecipesProps) => {
     const route = useRoute<RecipeDetailsRouteProp>();
     const { id } = route.params;
     const api = useAxios();
@@ -242,6 +248,16 @@ const RecipeDetails = () => {
                     renderTime={renderTime}
                 />
             </ScrollView>
+            <TouchableOpacity
+                style={styles.startButton}
+                onPress={() =>
+                    navigation.navigate("RecipeInstruction", { recipe })
+                }
+            >
+                <Text style={{ fontFamily: "medium", fontSize: 19 }}>
+                    Start
+                </Text>
+            </TouchableOpacity>
         </SafeAreaView>
     );
 };
@@ -296,5 +312,20 @@ const styles = StyleSheet.create({
         //flex: 1,
         marginTop: -10,
         maxWidth: width * 0.5,
+    },
+    startButton: {
+        position: "absolute",
+        alignSelf: "center",
+        top: height * 0.82,
+        //left: width * 0.4,
+        backgroundColor: COLORS.pistache,
+        width: width * 0.2,
+        height: width * 0.1,
+        borderWidth: 2,
+        zIndex: 10,
+        borderRadius: 25,
+        borderColor: COLORS.espresso,
+        justifyContent: "center",
+        alignItems: "center",
     },
 });

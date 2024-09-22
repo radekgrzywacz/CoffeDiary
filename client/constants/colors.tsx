@@ -1,7 +1,7 @@
 export const COLORS = {
     white: "#ffffff",
     black: "#000000",
-    matcha: "#809671",
+    matcha: "#809670",
     almond: "#E5E0D8",
     almondBright: "#CEC9C2",
     pistache: "#B3B792",

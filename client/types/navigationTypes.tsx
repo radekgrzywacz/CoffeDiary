@@ -10,6 +10,7 @@ export type RootStackParamList = {
     BrewerDetails: undefined;
     Recipes: undefined;
     Recipe: undefined;
+    RecipeInstruction: undefined;
 };
 
 export type RootTabParamList = {
@@ -71,4 +72,8 @@ export type BrewerDetailsScreenNavigationProp = StackNavigationProp<
 export type RecipeDetailScreenNavigationProp = StackNavigationProp<
     RootStackParamList,
     "Recipe"
+>;
+export type RecipeInstructionScreenNavigationProp = StackNavigationProp<
+    RootStackParamList,
+    "RecipeInstruction"
 >;
