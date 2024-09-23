@@ -15,7 +15,12 @@ import InputContainer from "../components/normalInputContainer";
 
 const AddCoffee = () => {
     const [name, setName] = useState<string>("");
+    const [roastery, setRoastery] = useState<string>("");
     const [country, setCountry] = useState<string>("");
+    const [region, setRegion] = useState<string>("");
+    const [processing, setProcessing] = useState<string>("");
+    const [roastLevel, setRoastLevel] = useState<string>("");
+
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView style={styles.innerContainer}>
@@ -40,9 +45,29 @@ const AddCoffee = () => {
                     placeholder="Name"
                 />
                 <InputContainer
+                    value={roastery}
+                    onChange={setRoastery}
+                    placeholder="Roastery"
+                />
+                <InputContainer
                     value={country}
                     onChange={setCountry}
                     placeholder="Country"
+                />
+                <InputContainer
+                    value={region}
+                    onChange={setRegion}
+                    placeholder="Region"
+                />
+                <InputContainer
+                    value={processing}
+                    onChange={setProcessing}
+                    placeholder="Processing"
+                />
+                <InputContainer
+                    value={roastLevel}
+                    onChange={setRoastLevel}
+                    placeholder="Roast level"
                 />
             </ScrollView>
         </SafeAreaView>

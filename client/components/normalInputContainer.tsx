@@ -8,7 +8,7 @@ const InputContainer = ({
     onChange,
     placeholder,
 }: {
-    value: number;
+    value: string;
     onChange: (text: string) => void;
     placeholder: string;
 }) => {
