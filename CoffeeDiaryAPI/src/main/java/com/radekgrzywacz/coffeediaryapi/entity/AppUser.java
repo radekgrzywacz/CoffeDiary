@@ -40,6 +40,10 @@ public class AppUser implements UserDetails {
     @JsonManagedReference
     private List<Brewer> brewers;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Coffee> coffees;
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
