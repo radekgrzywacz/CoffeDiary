@@ -7,11 +7,14 @@ import {
     TouchableOpacity,
     TextInput,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Feather } from "@expo/vector-icons";
 import { COLORS } from "../constants/colors";
 import { width } from "../constants/screen";
 import InputContainer from "../components/normalInputContainer";
+import RNDateTimePicker, {
+    DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
 
 const AddCoffee = () => {
     const [name, setName] = useState<string>("");
@@ -20,6 +23,16 @@ const AddCoffee = () => {
     const [region, setRegion] = useState<string>("");
     const [processing, setProcessing] = useState<string>("");
     const [roastLevel, setRoastLevel] = useState<string>("");
+    const [roastDate, setRoastDate] = useState<Date>(new Date());
+
+    const handleRoastDateChange = (
+        event: DateTimePickerEvent,
+        selectedDate?: Date
+    ) => {
+        if (event.type === "set" && selectedDate) {
+            setRoastDate(selectedDate);
+        }
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -69,6 +82,27 @@ const AddCoffee = () => {
                     onChange={setRoastLevel}
                     placeholder="Roast level"
                 />
+                <View
+                    style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        marginTop: 5,
+                    }}
+                >
+                    <Text
+                        style={{
+                            fontFamily: "medium",
+                            fontSize: 19,
+                        }}
+                    >
+                        Roast date:
+                    </Text>
+                    <RNDateTimePicker
+                        value={roastDate}
+                        onChange={handleRoastDateChange}
+                        style={{ alignSelf: "flex-start" }}
+                    />
+                </View>
             </ScrollView>
         </SafeAreaView>
     );
