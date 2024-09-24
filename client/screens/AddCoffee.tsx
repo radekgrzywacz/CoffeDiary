@@ -15,8 +15,12 @@ import InputContainer from "../components/normalInputContainer";
 import RNDateTimePicker, {
     DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
+import { Coffee } from "../types/Coffee";
+import useAxios from "../utils/useAxios";
+import { API_URL } from "../context/AuthContext";
 
 const AddCoffee = () => {
+    const api = useAxios();
     const [name, setName] = useState<string>("");
     const [roastery, setRoastery] = useState<string>("");
     const [country, setCountry] = useState<string>("");
@@ -34,12 +38,43 @@ const AddCoffee = () => {
         }
     };
 
+    const onSave = async () => {
+        const newCoffee: Coffee = {
+            name: name,
+            roastery: roastery,
+            country: country,
+            region: region,
+            processing: processing,
+            roastLevel: roastLevel,
+            roastDate: roastDate,
+        };
+
+        if (name === "" || roastery === "") {
+            alert("Please insert name and roastery");
+        } else {
+            try {
+                const result = api.post(`${API_URL}/coffees`, newCoffee);
+                setName("");
+                setRoastery("");
+                setCountry("");
+                setRegion("");
+                setProcessing("");
+                setRoastLevel("");
+                setRoastDate(new Date());
+            } catch (e: any) {
+                const errorMessage =
+                    e.response.data.error || "An error occurred";
+                return { error: true, msg: errorMessage };
+            }
+        }
+    };
+
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView style={styles.innerContainer}>
                 <TouchableOpacity
                     style={{ alignSelf: "flex-end", flexDirection: "row" }}
-                    onPress={() => console.log("Saving coffee")}
+                    onPress={onSave}
                 >
                     <Text
                         style={{
