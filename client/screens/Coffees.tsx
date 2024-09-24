@@ -4,35 +4,57 @@ import {
     StyleSheet,
     SafeAreaView,
     FlatList,
+    Platform,
     TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { COLORS } from "../constants/colors";
 import { CoffeesScreenNavigationProp } from "../types/navigationTypes";
 import { Coffee } from "../types/Coffee";
 import { Feather } from "@expo/vector-icons";
 import { height, width } from "../constants/screen";
+import useAxios from "../utils/useAxios";
+import { API_URL } from "../context/AuthContext";
 
 interface CoffeesProps {
     navigation: CoffeesScreenNavigationProp;
 }
 
-interface CoffeeName {
-    name: string;
-    id: number;
-}
-
 const Coffees = ({ navigation }: CoffeesProps) => {
-    const [coffeeNames, setCoffeeNames] = useState<CoffeeName[]>([]);
+    const api = useAxios();
+    const [coffees, setCoffees] = useState<Coffee[]>([]);
 
-    type ItemProps = { name: string; id: number };
+    const getCoffees = async () => {
+        try {
+            const result = await api.get(`${API_URL}/coffees`);
+            setCoffees(result.data);
+            return result;
+        } catch (e: any) {
+            const errorMessage = e.response.data.error || "An error occurred";
+            console.log(e);
+            return { error: true, msg: errorMessage };
+        }
+    };
 
-    const Item = ({ name, id }: ItemProps) => {
+    useEffect(() => {
+        getCoffees();
+    }, []);
+
+    type ItemProps = { coffee: Coffee };
+
+    const Item = ({ coffee }: ItemProps) => {
         return (
-            <TouchableOpacity onPress={() => console.log("Going to brews")}>
+            <TouchableOpacity
+                onPress={() => console.log("Going to brew: ", coffee.id)}
+            >
                 <View style={styles.item}>
                     <View style={{ flex: 1 }}>
-                        <Text style={styles.title}>{name}</Text>
+                        <View>
+                            <Text style={styles.title}>{coffee.name}</Text>
+                            <Text style={styles.smallText}>
+                                {coffee.country} | {coffee.roastery}
+                            </Text>
+                        </View>
                     </View>
                     <Feather
                         name="arrow-right"
@@ -49,24 +71,31 @@ const Coffees = ({ navigation }: CoffeesProps) => {
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
                 <Text style={styles.mediumText}>Choose coffee:</Text>
-                {coffeeNames.length > 0 ? (
-                    <FlatList
-                        data={coffeeNames}
-                        renderItem={({ item }) => (
-                            <Item name={item.name} id={item.id} />
-                        )}
-                        keyExtractor={(item) => item.id.toString()}
-                        ItemSeparatorComponent={() => (
-                            <View
-                                style={{
-                                    borderBottomWidth: 2,
-                                    borderBottomColor: COLORS.espresso,
-                                    width: width * 0.85,
-                                    alignSelf: "center",
-                                }}
-                            ></View>
-                        )}
-                    />
+                {coffees.length > 0 ? (
+                    <View
+                        style={[
+                            styles.listBackground,
+                            Platform.OS === "ios"
+                                ? styles.shadow
+                                : styles.elevation,
+                        ]}
+                    >
+                        <FlatList
+                            data={coffees}
+                            renderItem={({ item }) => <Item coffee={item} />}
+                            keyExtractor={(item) => item.id.toString()}
+                            ItemSeparatorComponent={() => (
+                                <View
+                                    style={{
+                                        borderBottomWidth: 2,
+                                        borderBottomColor: COLORS.espresso,
+                                        width: width * 0.85,
+                                        alignSelf: "center",
+                                    }}
+                                ></View>
+                            )}
+                        />
+                    </View>
                 ) : (
                     <Text style={styles.infoText}>
                         You don't have any coffees added
@@ -89,6 +118,11 @@ const styles = StyleSheet.create({
     mediumText: {
         fontFamily: "medium",
         fontSize: 19,
+    },
+    smallText: {
+        fontFamily: "regular",
+        fontSize: 15,
+        color: COLORS.almond,
     },
     innerContainer: {
         paddingHorizontal: 20,
@@ -113,5 +147,22 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 19,
         alignSelf: "flex-start",
+    },
+    listBackground: {
+        backgroundColor: COLORS.pistache,
+        borderRadius: 10,
+        marginTop: 10,
+        width: width * 0.9,
+    },
+    shadow: {
+        shadowOffset: {
+            width: 2,
+            height: 2,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 5,
+    },
+    elevation: {
+        elevation: 5,
     },
 });

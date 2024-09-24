@@ -1,5 +1,6 @@
 import {
     View,
+    TouchableOpacity,
     Text,
     StyleSheet,
     SafeAreaView,
@@ -11,7 +12,6 @@ import { COLORS } from "../constants/colors";
 import SelectListCustom from "../components/SelectList";
 import useAxios from "../utils/useAxios";
 import { API_URL } from "../context/AuthContext";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { Feather } from "@expo/vector-icons";
 import { height, width } from "../constants/screen";
 import { useBrewers } from "../context/BrewerContext";
