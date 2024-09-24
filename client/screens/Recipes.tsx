@@ -135,7 +135,7 @@ const Recipes = ({ navigation }: RecipesProps) => {
                 ) : (
                     <Text style={styles.infoText}>
                         No recipes found for this brewer
-                    </Text> // Or some placeholder message
+                    </Text>
                 )}
             </View>
         </SafeAreaView>

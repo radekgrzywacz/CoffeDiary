@@ -12,6 +12,7 @@ import Recipes from "../screens/Recipes";
 import New from "../screens/New";
 import ProfileStack from "./ProfileSectionsNavigator";
 import RecipesStack from "./RecipesNavigator";
+import DiaryNavigator from "./DiaryNavigator";
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
@@ -31,7 +32,7 @@ const AppNavigator = () => {
                 //   tabBarInactiveTintColor: COLORS.espresso,
             }}
         >
-            <Tab.Screen name="Diary" component={Diary} />
+            <Tab.Screen name="Diary" component={DiaryNavigator} />
             <Tab.Screen name="Recipes" component={RecipesStack} />
             <Tab.Screen name="New" component={New} />
             <Tab.Screen name="Home" component={Home} />

@@ -11,6 +11,8 @@ export type RootStackParamList = {
     Recipes: undefined;
     Recipe: undefined;
     RecipeInstruction: undefined;
+    Coffees: undefined;
+    Brews: undefined;
 };
 
 export type RootTabParamList = {
@@ -36,10 +38,6 @@ export type ProfileScreenNavigationProp = BottomTabNavigationProp<
 export type HomeScreenNavigationProp = BottomTabNavigationProp<
     RootTabParamList,
     "Home"
->;
-export type DiaryScreenNavigationProp = BottomTabNavigationProp<
-    RootTabParamList,
-    "Diary"
 >;
 export type RecipesScreenNavigationProp = BottomTabNavigationProp<
     RootTabParamList,
@@ -76,4 +74,16 @@ export type RecipeDetailScreenNavigationProp = StackNavigationProp<
 export type RecipeInstructionScreenNavigationProp = StackNavigationProp<
     RootStackParamList,
     "RecipeInstruction"
+>;
+export type DiaryStackNavigationProp = BottomTabNavigationProp<
+    RootTabParamList,
+    "Diary"
+>;
+export type CoffeesScreenNavigationProp = StackNavigationProp<
+    RootStackParamList,
+    "Coffees"
+>;
+export type BrewsScreenNavigationProp = StackNavigationProp<
+    RootStackParamList,
+    "Brews"
 >;
