@@ -16,6 +16,7 @@ import { createIconSet } from "@expo/vector-icons";
 import glyphMap from "./assets/fonts/unicodesMap.json";
 import { BrewerProvider } from "./context/BrewerContext";
 import { RecipeProvider } from "./context/RecipeContext";
+import { CoffeeProvider } from "./context/CoffeeContext";
 
 export const CoffeeIcon = createIconSet(glyphMap, "Coffee", "Coffee.ttf");
 
@@ -46,7 +47,9 @@ export default function App() {
                     <AuthProvider>
                         <BrewerProvider>
                             <RecipeProvider>
-                                <MainNavigator />
+                                <CoffeeProvider>
+                                    <MainNavigator />
+                                </CoffeeProvider>
                             </RecipeProvider>
                         </BrewerProvider>
                     </AuthProvider>

@@ -1,5 +1,5 @@
 export interface Coffee {
-    id: number;
+    id: number | null;
     name: string;
     roastery: string;
     country: string;

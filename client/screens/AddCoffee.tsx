@@ -18,9 +18,11 @@ import RNDateTimePicker, {
 import { Coffee } from "../types/Coffee";
 import useAxios from "../utils/useAxios";
 import { API_URL } from "../context/AuthContext";
+import { useCoffees } from "../context/CoffeeContext";
 
 const AddCoffee = () => {
     const api = useAxios();
+    const { addCoffee } = useCoffees();
     const [name, setName] = useState<string>("");
     const [roastery, setRoastery] = useState<string>("");
     const [country, setCountry] = useState<string>("");
@@ -53,7 +55,7 @@ const AddCoffee = () => {
             alert("Please insert name and roastery");
         } else {
             try {
-                const result = api.post(`${API_URL}/coffees`, newCoffee);
+                addCoffee(newCoffee);
                 setName("");
                 setRoastery("");
                 setCountry("");

@@ -15,6 +15,7 @@ import { Feather } from "@expo/vector-icons";
 import { height, width } from "../constants/screen";
 import useAxios from "../utils/useAxios";
 import { API_URL } from "../context/AuthContext";
+import { useCoffees } from "../context/CoffeeContext";
 
 interface CoffeesProps {
     navigation: CoffeesScreenNavigationProp;
@@ -23,6 +24,7 @@ interface CoffeesProps {
 const Coffees = ({ navigation }: CoffeesProps) => {
     const api = useAxios();
     const [coffees, setCoffees] = useState<Coffee[]>([]);
+    const { refreshCoffees } = useCoffees();
 
     const getCoffees = async () => {
         try {
@@ -38,7 +40,7 @@ const Coffees = ({ navigation }: CoffeesProps) => {
 
     useEffect(() => {
         getCoffees();
-    }, []);
+    }, [refreshCoffees]);
 
     type ItemProps = { coffee: Coffee };
 
