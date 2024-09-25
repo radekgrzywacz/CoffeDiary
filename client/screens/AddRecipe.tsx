@@ -16,15 +16,14 @@ import AddStepBottomSheet from "../components/AddStepBottomSheet";
 import { Feather } from "@expo/vector-icons";
 import Timeline from "react-native-timeline-flatlist";
 import { Recipe } from "../types/Recipe";
-import useAxios from "../utils/useAxios";
-import { API_URL } from "../context/AuthContext";
 import { height, width } from "../constants/screen";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useBrewers } from "../context/BrewerContext";
 import { Step } from "../types/Step";
+import { useRecipes } from "../context/RecipeContext";
 
 const AddRecipe = () => {
-    const api = useAxios();
+    const { addRecipe } = useRecipes();
 
     const [name, setName] = useState<string>("");
     const [brewer, setBrewer] = useState<string>("");
@@ -124,7 +123,7 @@ const AddRecipe = () => {
             alert("Name, brewer and grinder are mandatory!");
         } else {
             try {
-                const result = await api.post(`${API_URL}/recipes`, newRecipe);
+                addRecipe(newRecipe);
                 setName("");
                 setBrewer("");
                 setGrinder("");
@@ -134,7 +133,6 @@ const AddRecipe = () => {
                 setCoffeeAmount(0);
                 setSteps([]);
                 setResetKey(resetKey + 1);
-                return result.data;
             } catch (e: any) {
                 const errorMessage =
                     e.response.data.error || "An error occurred";

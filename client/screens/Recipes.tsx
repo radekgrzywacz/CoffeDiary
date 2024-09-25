@@ -17,6 +17,7 @@ import { height, width } from "../constants/screen";
 import { useBrewers } from "../context/BrewerContext";
 import { Brewer } from "../types/Brewer";
 import { RecipesScreenNavigationProp } from "../types/navigationTypes";
+import { useRecipes } from "../context/RecipeContext";
 
 interface recipeNames {
     name: string;
@@ -29,6 +30,7 @@ interface RecipesProps {
 
 const Recipes = ({ navigation }: RecipesProps) => {
     let api = useAxios();
+    const { refreshRecipes } = useRecipes();
 
     const [resetKey, setResetKey] = useState(0);
     const [brewer, setBrewer] = useState("");
@@ -66,7 +68,7 @@ const Recipes = ({ navigation }: RecipesProps) => {
         } else {
             getRecipes();
         }
-    }, [brewer]);
+    }, [brewer, refreshRecipes]);
 
     type ItemProps = { name: string; id: number };
 

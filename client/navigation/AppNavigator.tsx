@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Dimensions, Image } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { RootTabParamList } from "../types/navigationTypes";
 import Profile from "../screens/Profile";

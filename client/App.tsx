@@ -15,6 +15,7 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { createIconSet } from "@expo/vector-icons";
 import glyphMap from "./assets/fonts/unicodesMap.json";
 import { BrewerProvider } from "./context/BrewerContext";
+import { RecipeProvider } from "./context/RecipeContext";
 
 export const CoffeeIcon = createIconSet(glyphMap, "Coffee", "Coffee.ttf");
 
@@ -44,7 +45,9 @@ export default function App() {
                 <View style={styles.AndroidSafeArea}>
                     <AuthProvider>
                         <BrewerProvider>
-                            <MainNavigator />
+                            <RecipeProvider>
+                                <MainNavigator />
+                            </RecipeProvider>
                         </BrewerProvider>
                     </AuthProvider>
                 </View>
