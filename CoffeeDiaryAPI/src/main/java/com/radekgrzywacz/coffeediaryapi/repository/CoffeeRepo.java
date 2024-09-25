@@ -1,5 +1,4 @@
 package com.radekgrzywacz.coffeediaryapi.repository;
-
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
