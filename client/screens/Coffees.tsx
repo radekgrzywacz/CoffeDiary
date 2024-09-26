@@ -23,24 +23,7 @@ interface CoffeesProps {
 
 const Coffees = ({ navigation }: CoffeesProps) => {
     const api = useAxios();
-    const [coffees, setCoffees] = useState<Coffee[]>([]);
-    const { refreshCoffees } = useCoffees();
-
-    const getCoffees = async () => {
-        try {
-            const result = await api.get(`${API_URL}/coffees`);
-            setCoffees(result.data);
-            return result;
-        } catch (e: any) {
-            const errorMessage = e.response.data.error || "An error occurred";
-            console.log(e);
-            return { error: true, msg: errorMessage };
-        }
-    };
-
-    useEffect(() => {
-        getCoffees();
-    }, [refreshCoffees]);
+    const { coffees, refreshCoffees } = useCoffees();
 
     type ItemProps = { coffee: Coffee };
 

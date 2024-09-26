@@ -18,11 +18,13 @@ interface RecipeInstructionProps {
     navigation: RecipeInstructionScreenNavigationProp;
 }
 type RecipeInstructionRouteProp = RouteProp<
-    { Recipe: { recipe: Recipe } },
+    { Recipe: { recipe: Recipe; coffeeId: number } },
     "Recipe"
 >;
 
 const RecipeInstruction = ({ navigation }: RecipeInstructionProps) => {
+    const [isFirst, setIsFirst] = useState(true);
+    const [start, setStart] = useState(false);
     const route = useRoute<RecipeInstructionRouteProp>();
     const { recipe } = route.params;
     const [key, setKey] = useState<number>(0);
@@ -36,6 +38,8 @@ const RecipeInstruction = ({ navigation }: RecipeInstructionProps) => {
     const changeStep = () => {
         setStepsCounter((prevCounter) => {
             if (prevCounter < recipe.steps.length - 1) {
+                setIsFirst(false);
+                setStart(true);
                 setFinish(false);
                 const newStepIndex = prevCounter + 1;
                 const newStep: Step = recipe.steps[newStepIndex];
@@ -70,7 +74,7 @@ const RecipeInstruction = ({ navigation }: RecipeInstructionProps) => {
                     <View>
                         <CountdownCircleTimer
                             key={key}
-                            isPlaying={time === 0 ? false : true}
+                            isPlaying={time === 0 ? false : start}
                             duration={time}
                             colors={["#809671", "#B3B792", "#E5D2B8"]}
                             colorsTime={[time, time / 2, 0]}
@@ -88,15 +92,17 @@ const RecipeInstruction = ({ navigation }: RecipeInstructionProps) => {
                                         width: timerSize * 0.9,
                                     }}
                                 >
-                                    <Text
-                                        style={{
-                                            fontFamily: "bold",
-                                            fontSize: 80,
-                                            color: COLORS.matcha,
-                                        }}
-                                    >
-                                        {remainingTime}
-                                    </Text>
+                                    {time > 0 && (
+                                        <Text
+                                            style={{
+                                                fontFamily: "bold",
+                                                fontSize: 80,
+                                                color: COLORS.matcha,
+                                            }}
+                                        >
+                                            {remainingTime}
+                                        </Text>
+                                    )}
                                     <Text
                                         style={{
                                             fontFamily: "medium",
@@ -109,21 +115,62 @@ const RecipeInstruction = ({ navigation }: RecipeInstructionProps) => {
                                 </View>
                             )}
                         </CountdownCircleTimer>
-                        {time === 0 && (
-                            <TouchableOpacity onPress={changeStep}>
+                        <View style={{ marginTop: height * 0.1 }}>
+                            {/* Reserve space for buttons */}
+                            <TouchableOpacity
+                                onPress={changeStep}
+                                style={[
+                                    styles.finishButton,
+                                    {
+                                        opacity: time === 0 && !finish ? 1 : 0,
+                                        pointerEvents:
+                                            time === 0 ? "auto" : "none",
+                                    },
+                                ]}
+                            >
                                 <Text>Next step</Text>
                             </TouchableOpacity>
-                        )}
-                        {stepsCounter === recipe.steps.length - 1 && finish && (
-                            <View style={{marginTop: height*0.1}}>
                             <TouchableOpacity
-                                style={styles.finishButton}
+                                onPress={() => setStart(true)}
+                                style={[
+                                    styles.finishButton,
+                                    {
+                                        opacity:
+                                            isFirst && !start && time > 0
+                                                ? 1
+                                                : 0,
+                                        pointerEvents:
+                                            isFirst && !start && time > 0
+                                                ? "auto"
+                                                : "none",
+                                    },
+                                ]}
+                            >
+                                <Text>Start</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={[
+                                    styles.finishButton,
+                                    {
+                                        opacity:
+                                            stepsCounter ===
+                                                recipe.steps.length - 1 &&
+                                            finish
+                                                ? 1
+                                                : 0,
+                                        pointerEvents:
+                                            stepsCounter ===
+                                                recipe.steps.length - 1 &&
+                                            finish
+                                                ? "auto"
+                                                : "none",
+                                    },
+                                ]}
                                 onPress={() => navigation.navigate("Recipes")}
                             >
                                 <Text>Finish</Text>
                             </TouchableOpacity>
-                            </View>
-                        )}
+                        </View>
                     </View>
                 </View>
             </View>
@@ -151,7 +198,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        marginTop: height*0.1,
+        marginTop: height * 0.1,
     },
     finishButton: {
         alignSelf: "center",

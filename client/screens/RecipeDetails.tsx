@@ -9,7 +9,7 @@ import {
     Platform,
     TouchableOpacity,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { COLORS } from "../constants/colors";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import { API_URL } from "../context/AuthContext";
@@ -18,8 +18,9 @@ import { Recipe } from "../types/Recipe";
 import { height, width } from "../constants/screen";
 import { Step } from "../types/Step";
 import Timeline from "react-native-timeline-flatlist";
-import App from "../App";
 import { RecipeDetailScreenNavigationProp } from "../types/navigationTypes";
+import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import ChooseCoffeeBottomSheet from "../components/ChooseCoffeeBottomSheet";
 
 type RecipeDetailsRouteProp = RouteProp<{ Recipe: { id: number } }, "Recipe">;
 interface RecipesProps {
@@ -35,7 +36,15 @@ const RecipeDetails = ({ navigation }: RecipesProps) => {
     const { id } = route.params;
     const api = useAxios();
     const [recipe, setRecipe] = useState<Recipe>();
-    const [time, setTime] = useState<TimerValues>();
+    const [time, setTime] = useState<TimerValues>({minutes: 0, seconds: 0 });
+
+    const bottomSheetRef = useRef<BottomSheetModal>(null);
+    const handlePresentModalPress = () => {
+        bottomSheetRef.current?.present();
+    };
+    const handleCloseModal = () => {
+        bottomSheetRef.current?.dismiss();
+    };
 
     const getRecipeDetails = async () => {
         try {
@@ -116,6 +125,10 @@ const RecipeDetails = ({ navigation }: RecipesProps) => {
             </View>
         );
     };
+
+    const goToRecipe = (id: number) => {
+        navigation.navigate("RecipeInstruction", { id, recipe });
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -250,14 +263,19 @@ const RecipeDetails = ({ navigation }: RecipesProps) => {
             </ScrollView>
             <TouchableOpacity
                 style={styles.startButton}
-                onPress={() =>
-                    navigation.navigate("RecipeInstruction", { recipe })
+                onPress={
+                    handlePresentModalPress
                 }
             >
                 <Text style={{ fontFamily: "medium", fontSize: 19 }}>
                     Start
                 </Text>
             </TouchableOpacity>
+            <ChooseCoffeeBottomSheet
+                ref={bottomSheetRef}
+                close={handleCloseModal}
+                onSubmit={goToRecipe}
+            />
         </SafeAreaView>
     );
 };

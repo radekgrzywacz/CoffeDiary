@@ -1,21 +1,13 @@
-import { View, Text, StyleSheet, Dimensions } from "react-native";
-import React, {
-    forwardRef,
-    useCallback,
-    useMemo,
-    useRef,
-    useState,
-} from "react";
-import BottomSheet, {
+import { View, Text, StyleSheet } from "react-native";
+import React, { forwardRef, useCallback, useMemo, useState } from "react";
+import {
     BottomSheetBackdrop,
-    BottomSheetFlatList,
     BottomSheetModal,
     TouchableOpacity,
 } from "@gorhom/bottom-sheet";
 import { COLORS } from "../constants/colors";
 import { TextInput } from "react-native-gesture-handler";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-import { Picker } from "@react-native-picker/picker";
 import TimerPicker from "./TimerPicker";
 import { width } from "../constants/screen";
 import { Step } from "../types/Step";
@@ -40,7 +32,6 @@ const AddStepBottomSheet = forwardRef<Ref, Props>((props, ref) => {
         selectedSeconds: 0,
     });
     const [description, setDescription] = useState("");
-    const step = { time: "", title: "", description: "" };
 
     const renderBackdrop = useCallback(
         (props: any) => (

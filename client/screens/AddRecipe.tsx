@@ -118,9 +118,10 @@ const AddRecipe = () => {
         if (
             newRecipe.name === "" ||
             newRecipe.brewer === "" ||
-            newRecipe.grinder === ""
+            newRecipe.grinder === "" ||
+            newRecipe.steps.length === 0
         ) {
-            alert("Name, brewer and grinder are mandatory!");
+            alert("Name, brewer, gridner and at least one step are mandatory!");
         } else {
             try {
                 addRecipe(newRecipe);
